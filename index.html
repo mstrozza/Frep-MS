@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CraftLab · Hub de aplicaciones</title>
+
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <rect width="64" height="64" rx="18" fill="%23111827"/>
+    <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
+          font-family="Arial,sans-serif" font-size="26" font-weight="700"
+          fill="%23ffffff">CL</text>
+  </svg>' />
+
   <style>
     :root {
       --bg: #f7f8fb;
@@ -112,9 +121,72 @@
     .main-nav a:hover { color: var(--text); }
     .nav-actions { display: flex; align-items: center; gap: 8px; }
 
+    .toggle-wrap {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      color: var(--muted);
+      font-size: .95rem;
+      flex:0 0 auto;
+      min-height:42px;
+      padding:0 10px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background: var(--surface-solid);
+    }
+
+    .icon-mini { width:16px; height:16px; opacity:.9; }
+
+    .switch {
+      position:relative;
+      width:52px;
+      height:30px;
+      background: rgba(148,163,184,.28);
+      border:1px solid var(--border);
+      border-radius:999px;
+      cursor:pointer;
+      transition:.25s ease;
+      flex:0 0 auto;
+    }
+
+    .switch::after {
+      content:"";
+      position:absolute;
+      top:3px;
+      left:3px;
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,.18);
+      transition:.25s ease;
+    }
+
+    .switch.active::after {
+      left:25px;
+      background:#e2e8f0;
+    }
+
+    body.dark .switch {
+      background: rgba(162,162,211,.18);
+    }
+
+    body.dark .switch.active::after {
+      left:25px;
+      background:#e2e8f0;
+    }
+
+    body.light .switch.active::after {
+      left:25px;
+    }
+
+    
+
     .icon-btn {
-      width: 42px;
+      min-width: 42px;
       height: 42px;
+      padding: 0 14px;
       border: 1px solid var(--border);
       border-radius: 14px;
       background: var(--surface-solid);
@@ -231,23 +303,25 @@
     body.dark .tag.lab { background:rgba(55,48,163,.22); color:#c7d2fe; }
     .version { color: var(--muted); font-size:.82rem; font-weight:700; }
 
-    .preview-window { width:100%; height:128px; border-radius:18px; background:linear-gradient(180deg,var(--surface-muted),var(--surface-soft)); border:1px solid var(--border); margin-bottom:18px; position:relative; overflow:hidden; }
-    .preview-window::before { content:""; position:absolute; inset:0 0 auto; height:34px; background:var(--surface-solid); border-bottom:1px solid var(--border); z-index:2; }
-    .preview-window::after { content:""; position:absolute; top:11px; left:14px; width:42px; height:10px; border-radius:999px; background:var(--border-strong); box-shadow:52px 0 0 var(--border),104px 0 0 var(--surface-soft); z-index:2; }
+    .preview-window { width:100%; height:128px; padding:0; text-align:left; color:inherit; border-radius:18px; background:linear-gradient(180deg,var(--surface-muted),var(--surface-soft)); border:1px solid var(--border); margin-bottom:18px; position:relative; overflow:hidden; display:block; }
+    .preview-window.clickable-preview { cursor:pointer; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+    .preview-window.clickable-preview:hover { transform: translateY(-1px); border-color: var(--border-strong); box-shadow: var(--shadow-soft); }
+    .preview-window::before { content:none; }
+    .preview-window::after { content:none; }
 
     .preview-iframe-wrapper {
       position:absolute;
-      inset:34px 0 0 0;
+      inset:0;
       overflow:hidden;
       background:var(--surface-solid);
       z-index:1;
     }
 
     .preview-iframe {
-      width:260%;
-      height:260%;
+      width:250%;
+      height:250%;
       border:0;
-      transform:scale(.385);
+      transform:scale(.4);
       transform-origin:top left;
       pointer-events:none;
       background:white;
@@ -259,7 +333,7 @@
 
     .preview-fallback {
       position:absolute;
-      inset:34px 0 0 0;
+      inset:0;
       display:grid;
       place-items:center;
       padding:14px;
@@ -284,7 +358,7 @@
 
     .external-preview {
       position:absolute;
-      inset:34px 0 0 0;
+      inset:0;
       display:flex;
       align-items:center;
       gap:12px;
@@ -414,6 +488,21 @@
     .roadmap-icon-btn { width:32px; height:32px; border-radius:10px; border:1px solid var(--border); background:var(--surface-soft); display:grid; place-items:center; font-size:.84rem; }
     .mini-item span { color:var(--muted); }
 
+    .app-popup-modal { position: fixed; inset: 0; z-index: 55; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15, 23, 42, .42); backdrop-filter: blur(8px); }
+    .app-popup-modal.open { display: flex; }
+    .app-popup-panel { width: min(1180px, 100%); height: min(820px, calc(100vh - 48px)); background: var(--surface-solid); border: 1px solid var(--border); border-radius: 26px; box-shadow: 0 32px 90px rgba(0,0,0,.30); overflow: hidden; display: flex; flex-direction: column; }
+    .app-popup-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px; border-bottom: 1px solid var(--border); background: var(--surface-solid); }
+    .app-popup-title { min-width: 0; }
+    .app-popup-title strong { display: block; letter-spacing: -.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .app-popup-title span { display: block; color: var(--muted); font-size: .82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .app-popup-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .app-popup-frame { width: 100%; flex: 1; border: 0; background: var(--surface-muted); }
+    @media (max-width: 640px) {
+      .app-popup-modal { padding: 12px; }
+      .app-popup-panel { height: calc(100vh - 24px); border-radius: 22px; }
+      .app-popup-head { padding: 12px; }
+    }
+
     .admin-modal { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15, 23, 42, .38); backdrop-filter: blur(8px); }
     .admin-modal.open { display: flex; }
     .admin-panel { width: min(1120px, 100%); height: min(820px, calc(100vh - 48px)); max-height: min(820px, calc(100vh - 48px)); overflow: hidden; padding: 0 24px 24px; background: var(--surface-solid); border: 1px solid var(--border); border-radius: 26px; box-shadow: 0 32px 90px rgba(0,0,0,.28); }
@@ -542,14 +631,21 @@
 
         <div class="nav-actions">
           <button class="icon-btn" id="manageAppsBtn" aria-label="Gestionar aplicaciones">⚙</button>
-          <button class="icon-btn" id="themeToggle" aria-label="Cambiar modo claro u oscuro">☾</button>
+          
+          
+<div class="toggle-wrap">
+  <span class="icon-mini">☀</span>
+  <button id="themeToggle" class="switch" aria-label="Cambiar tema" aria-pressed="false" type="button"></button>
+  <span class="icon-mini">☾</span>
+</div>
+
         </div>
       </header>
 
       <section class="hero" id="inicio" style="scroll-margin-top: 120px;">
         <article class="card hero-main">
           <div>
-            <div class="eyebrow">CraftLab · laboratorio de aplicaciones útiles</div>
+            <div class="eyebrow">CraftLab · Laboratorio de aplicaciones útiles</div>
             <h1>Herramientas propias, reunidas en un espacio limpio.</h1>
             <p class="lead">Un hub personal para acceder a calculadoras, generadores, configuradores y prototipos creados para resolver problemas reales con una experiencia sencilla y cuidada.</p>
             <div class="hero-actions">
@@ -604,7 +700,7 @@
           <div class="roadmap-head">
             <div>
               <div class="eyebrow">Roadmap</div>
-              <h2>En evolución constante.</h2>
+              <h2>En evolución constante</h2>
             </div>
           </div>
 
@@ -633,13 +729,29 @@
 
       <section class="card panel" id="about" style="margin-top:24px;">
         <div class="eyebrow">Sobre CraftLab</div>
-        <h2>Un espacio simple para crear, probar y usar.</h2>
+        <h2>Un espacio simple para crear, probar y usar</h2>
         <p class="lead" style="margin-bottom:0;max-width:900px;">CraftLab reúne herramientas digitales, prototipos y pequeñas aplicaciones pensadas para ser útiles, accesibles y fáciles de mantener. La idea es crecer poco a poco, sin perder claridad.</p>
       </section>
 
       <footer>CraftLab · Hub estático con apps independientes por carpeta</footer>
     </div>
   </main>
+
+
+  <section class="app-popup-modal" id="appPopupModal" aria-modal="true" role="dialog" aria-labelledby="appPopupTitle">
+    <div class="app-popup-panel">
+      <div class="app-popup-head">
+        <div class="app-popup-title">
+          <strong id="appPopupTitle">Aplicación</strong>
+          <span id="appPopupUrl"></span>
+        </div>
+        <div class="app-popup-actions">
+          <button class="icon-btn" id="closeAppPopupBtn" aria-label="Cerrar aplicación">Cerrar</button>
+        </div>
+      </div>
+      <iframe class="app-popup-frame" id="appPopupFrame" src="about:blank"></iframe>
+    </div>
+  </section>
 
   <section class="admin-modal" id="adminModal" aria-modal="true" role="dialog" aria-labelledby="adminTitle">
     <div class="admin-panel">
@@ -649,7 +761,7 @@
           <h2 id="adminTitle">Gestionar aplicaciones</h2>
           <p>Añade, edita, duplica, elimina o reordena tarjetas. Cada cambio se guarda automáticamente.</p>
         </div>
-        <button class="icon-btn" id="closeAdminBtn" aria-label="Cerrar panel">×</button>
+        <button class="icon-btn" id="closeAdminBtn" aria-label="Cerrar panel">Cerrar</button>
       </div>
 
       <div class="admin-grid">
@@ -671,7 +783,7 @@
               </label>
               <div class="admin-toolbar" aria-label="Acciones de edición">
                 <button class="admin-icon-btn" type="submit" title="Guardar app" aria-label="Guardar app">💾</button>
-                <button class="admin-icon-btn" type="button" id="newAppBtn" title="Nuevo" aria-label="Nuevo">Nuevo</button>
+                <button class="admin-icon-btn" type="button" id="newAppBtn" title="Añadir" aria-label="Añadir">Añadir</button>
                 <button class="admin-icon-btn danger" type="button" id="resetAppsBtn" title="Inicializar edición" aria-label="Inicializar edición">↺</button>
               </div>
             </div>
@@ -716,7 +828,7 @@
             </div>
             <div class="field full">
               <label for="appUrl">URL</label>
-              <input id="appUrl" placeholder="./apps/tu-app/" />
+              <input id="appUrl" placeholder="https://..." />
             </div>
             <div class="field full">
               <label for="appDescription">Descripción</label>
@@ -849,21 +961,28 @@
     const adminNotice = document.getElementById('adminNotice');
     const roadmapList = document.getElementById('roadmapList');
     const saveRoadmapBtn = document.getElementById('saveRoadmapBtn');
-
-    function applySavedTheme() {
-      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const shouldUseDark = savedTheme ? savedTheme === 'dark' : prefersDark;
-      document.body.classList.toggle('dark', shouldUseDark);
-      const themeButton = document.getElementById('themeToggle');
-      if (themeButton) themeButton.textContent = shouldUseDark ? '☀' : '☾';
-    }
+    const themeToggle = document.getElementById('themeToggle');
+    const appPopupModal = document.getElementById('appPopupModal');
+    const appPopupFrame = document.getElementById('appPopupFrame');
+    const appPopupTitle = document.getElementById('appPopupTitle');
+    const appPopupUrl = document.getElementById('appPopupUrl');
+    const closeAppPopupBtn = document.getElementById('closeAppPopupBtn');
 
     function setTheme(isDark) {
       document.body.classList.toggle('dark', isDark);
       localStorage.setItem(THEME_STORAGE_KEY, isDark ? 'dark' : 'light');
-      const themeButton = document.getElementById('themeToggle');
-      if (themeButton) themeButton.textContent = isDark ? '☀' : '☾';
+
+      if (themeToggle) {
+        themeToggle.classList.toggle('active', isDark);
+        themeToggle.setAttribute('aria-pressed', String(isDark));
+        themeToggle.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+      }
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(savedTheme ? savedTheme === 'dark' : prefersDark);
     }
 
     function isAdminUnlocked() {
@@ -953,42 +1072,40 @@
       const host = getUrlHost(safeUrl);
       const faviconUrl = host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : '';
 
-      if (isExternal) {
-        return `
-          <div class="preview-window">
-            <div class="external-preview">
-              <div class="external-preview-icon">
-                ${faviconUrl ? `<img src="${escapeAttr(faviconUrl)}" alt="" loading="lazy">` : '🌐'}
-              </div>
-              <div class="external-preview-text">
-                <strong>${escapeHtml(host || app.title || 'Web externa')}</strong>
-                <span>Vista embebida bloqueada por la web</span>
-              </div>
-            </div>
+      const previewContent = isExternal ? `
+        <div class="external-preview">
+          <div class="external-preview-icon">
+            ${faviconUrl ? `<img src="${escapeAttr(faviconUrl)}" alt="" loading="lazy">` : '🌐'}
           </div>
-        `;
-      }
-
-      return `
-        <div class="preview-window">
-          <div class="preview-fallback">
-            <div>
-              <strong>Vista previa no disponible</strong>
-              <span>${escapeHtml(safeUrl)}</span>
-            </div>
-          </div>
-          <div class="preview-iframe-wrapper">
-            <iframe
-              class="preview-iframe"
-              src="${escapeAttr(safeUrl)}"
-              loading="lazy"
-              tabindex="-1"
-              aria-hidden="true"
-              onload="this.closest('.preview-window')?.classList.add('has-frame')"
-              onerror="this.closest('.preview-window')?.classList.remove('has-frame')">
-            </iframe>
+          <div class="external-preview-text">
+            <strong>${escapeHtml(host || app.title || 'Web externa')}</strong>
+            <span>Vista embebida bloqueada por la web</span>
           </div>
         </div>
+      ` : `
+        <div class="preview-fallback">
+          <div>
+            <strong>Vista previa no disponible</strong>
+            <span>${escapeHtml(safeUrl)}</span>
+          </div>
+        </div>
+        <div class="preview-iframe-wrapper">
+          <iframe
+            class="preview-iframe"
+            src="${escapeAttr(safeUrl)}"
+            loading="lazy"
+            tabindex="-1"
+            aria-hidden="true"
+            onload="this.closest('.preview-window')?.classList.add('has-frame')"
+            onerror="this.closest('.preview-window')?.classList.remove('has-frame')">
+          </iframe>
+        </div>
+      `;
+
+      return `
+        <button class="preview-window clickable-preview" type="button" data-popup-url="${escapeAttr(safeUrl)}" data-popup-title="${escapeAttr(app.title || 'Aplicación')}" aria-label="Abrir vista previa de ${escapeAttr(app.title || 'aplicación')}">
+          ${previewContent}
+        </button>
       `;
     }
 
@@ -1039,7 +1156,7 @@
             </div>
             <span class="tag ${app.tag || getTagFromStatus(app.status)}">${escapeHtml(app.status)}</span>
           </div>
-          ${createMockWindow()}
+          ${preview(app)}
           <p class="lead" style="font-size:.96rem;margin:18px 0 0;">${escapeHtml(app.description || 'Sin descripción todavía.')}</p>
         </div>
       `).join('');
@@ -1160,7 +1277,7 @@
           </div>
           <div class="card-footer">
             <span class="meta">${escapeHtml(app.category)}</span>
-            <a class="open-app" href="${escapeAttr(app.url)}" aria-label="Abrir ${escapeAttr(app.title)}">Abrir app</a>
+            <a class="open-app" href="${escapeAttr(resolvePreviewUrl(app.url))}" target="_blank" rel="noopener noreferrer" aria-label="Abrir ${escapeAttr(app.title)}">Abrir en pestaña</a>
           </div>
         </article>
       `).join('');
@@ -1190,7 +1307,17 @@
     function persistAndRefresh() {
       normalizeFeatured(apps);
       saveApps();
-      renderApps();
+  
+    ['appTitle', 'appSlug', 'appCategory', 'appUrl'].forEach((fieldId) => {
+      const field = document.getElementById(fieldId);
+      field?.addEventListener('input', () => {
+        field.closest('.field')?.classList.remove('invalid');
+        adminNotice?.classList.remove('show');
+      });
+    });
+
+
+    renderApps();
       renderAdminList();
     }
 
@@ -1309,7 +1436,7 @@
     }
 
     function saveFormApp() {
-      if (!validateRequiredFields(['appTitle', 'appCategory'])) return false;
+      if (!validateRequiredFields(['appTitle', 'appSlug', 'appCategory', 'appUrl'])) return false;
 
       const app = getFormApp();
       const index = appEditIndex.value;
@@ -1373,6 +1500,30 @@
       }
     }
 
+    function openAppPopup(url, title = 'Aplicación') {
+      if (!url || url === '#') return;
+      appPopupTitle.textContent = title;
+      appPopupUrl.textContent = url;
+      appPopupFrame.src = url;
+      appPopupModal.classList.add('open');
+      document.body.classList.add('modal-open');
+    }
+
+    function closeAppPopup() {
+      appPopupModal.classList.remove('open');
+      appPopupFrame.src = 'about:blank';
+      document.body.classList.remove('modal-open');
+    }
+
+    document.addEventListener('click', (event) => {
+      const previewButton = event.target.closest('[data-popup-url]');
+      if (!previewButton) return;
+      event.preventDefault();
+      openAppPopup(previewButton.dataset.popupUrl, previewButton.dataset.popupTitle);
+    });
+
+    closeAppPopupBtn?.addEventListener('click', closeAppPopup);
+
     filters.addEventListener('click', (event) => {
       const chip = event.target.closest('.chip');
       if (!chip) return;
@@ -1399,23 +1550,90 @@
 
     closeAdminBtn.addEventListener('click', closeAdmin);
 
-    adminModal.addEventListener('click', (event) => {
-      if (event.target === adminModal) closeAdmin();
-    });
-
     appForm.addEventListener('submit', (event) => {
       event.preventDefault();
       saveFormApp();
     });
 
-    newAppBtn.addEventListener('click', () => {
-      const isAdding = newAppBtn.classList.contains('add-mode');
-      if (!isAdding) {
-        resetForm(true, true);
+    appFeatured?.addEventListener('change', () => {
+      const index = appEditIndex.value;
+
+      // En modo edición, el estado “Destacada” se guarda al instante.
+      // En modo nueva app, se conserva el comportamiento normal y se guardará al añadir.
+      if (index === '') return;
+
+      const numericIndex = Number(index);
+      const app = apps[numericIndex];
+      if (!app) return;
+
+      const wantsFeatured = appFeatured.checked;
+      const featuredCount = apps.filter((item, itemIndex) => item.featured && itemIndex !== numericIndex).length;
+
+      if (wantsFeatured && featuredCount >= 2) {
+        appFeatured.checked = false;
+        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
         return;
       }
-      saveFormApp();
+
+      app.featured = wantsFeatured;
+      normalizeFeatured(apps);
+      saveApps();
+      renderApps();
+      renderAdminList();
     });
+
+    newAppBtn.addEventListener('click', () => {
+      clearValidation();
+
+      const requiredFields = ['appTitle', 'appSlug', 'appCategory', 'appUrl'];
+
+      if (!validateRequiredFields(requiredFields)) {
+        return;
+      }
+
+      const data = {
+        title: document.getElementById('appTitle').value.trim(),
+        id: document.getElementById('appSlug').value.trim(),
+        icon: document.getElementById('appIcon').value.trim() || '🧩',
+        category: document.getElementById('appCategory').value.trim(),
+        status: document.getElementById('appStatus').value,
+        tag: getTagFromStatus(document.getElementById('appStatus').value),
+        version: document.getElementById('appVersion').value.trim() || 'v1.0',
+        url: document.getElementById('appUrl').value.trim(),
+        description: document.getElementById('appDescription').value.trim() || 'Sin descripción todavía.',
+        featured: document.getElementById('appFeatured').checked
+      };
+
+      const baseId = data.id;
+      let uniqueId = baseId;
+      let iteration = 2;
+
+      while (apps.some((app) => app.id === uniqueId)) {
+        uniqueId = `${baseId}-${iteration}`;
+        iteration++;
+      }
+
+      data.id = uniqueId;
+      document.getElementById('appSlug').value = uniqueId;
+
+      if (!canSetFeatured(data, '')) {
+        data.featured = false;
+        appFeatured.checked = false;
+        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
+      }
+
+      apps.push(data);
+
+      const newIndex = apps.length - 1;
+      appEditIndex.value = String(newIndex);
+      selectedAdminIndex = newIndex;
+
+      persistAndRefresh();
+      fillForm(apps[newIndex], newIndex);
+      renderAdminList();
+    });
+
+
 
     resetAppsBtn.addEventListener('click', () => {
       resetForm(true, false);
@@ -1592,10 +1810,9 @@
       }
     });
 
-    document.getElementById('themeToggle').addEventListener('click', () => {
+    themeToggle?.addEventListener('click', () => {
       setTheme(!document.body.classList.contains('dark'));
     });
-
     function runCraftLabTests() {
       console.assert(getTagFromStatus('Activa') === 'live', 'Estado Activa debe mapear a live');
       console.assert(getTagFromStatus('En desarrollo') === 'beta', 'Estado En desarrollo debe mapear a beta');
@@ -1609,12 +1826,28 @@
       console.assert(getRoadmapEmoji('En progreso') === '🔄', 'En progreso debe usar el icono correcto');
       console.assert(slugify('Mi App Ñ') === 'mi-app-n', 'slugify debe normalizar texto con acentos y ñ');
     }
-
-    applySavedTheme();
     normalizeFeatured(apps);
     saveApps();
     renderApps();
     runCraftLabTests();
+
+    initTheme();
+
+
+  
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+
+      if (adminModal.classList.contains('open')) {
+        closeAdmin();
+      }
+
+      if (appPopupModal.classList.contains('open')) {
+        closeAppPopup();
+      }
+    });
+
+
   </script>
 </body>
 </html>
