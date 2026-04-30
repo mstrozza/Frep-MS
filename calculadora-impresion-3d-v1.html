@@ -1,0 +1,1219 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de impresión 3D</title>
+  <style>
+    :root{
+      --accent:#a2a2d3;
+      --bg:#050816;
+      --panel:rgba(15,23,42,.58);
+      --panel-2:rgba(2,6,23,.70);
+      --text:#f8fafc;
+      --text-soft:#cbd5e1;
+      --text-muted:#94a3b8;
+      --border:rgba(162,162,211,.28);
+      --border-strong:rgba(162,162,211,.45);
+      --card-shadow:0 0 32px rgba(97,99,244,.18);
+      --hover-shadow:0 0 12px rgba(162,162,211,.35);
+      --active-shadow:0 0 14px rgba(162,162,211,.35);
+      --outline:0 0 0 1px rgba(162,162,211,.30);
+      --bg-grad-1: radial-gradient(circle at top, rgba(59,130,246,.14), transparent 32%),
+                   radial-gradient(circle at 80% 20%, rgba(139,92,246,.16), transparent 28%),
+                   linear-gradient(135deg,#020617 0%,#060816 38%,#0b1120 100%);
+      --info-bg:rgba(2,6,23,.50);
+      --button-bg:#1e293b;
+      --button-hover:#334155;
+      --divider:rgba(162,162,211,.22);
+      --input-bg:rgba(2,6,23,.70);
+      --stroke:#0f172a;
+    }
+
+    body.light{
+      --bg:#f8fafc;
+      --panel:rgba(255,255,255,.74);
+      --panel-2:rgba(255,255,255,.80);
+      --text:#0f172a;
+      --text-soft:#334155;
+      --text-muted:#64748b;
+      --border:rgba(162,162,211,.40);
+      --border-strong:rgba(162,162,211,.40);
+      --card-shadow:0 12px 30px rgba(148,163,184,.12);
+      --hover-shadow:0 0 10px rgba(162,162,211,.25);
+      --active-shadow:0 0 12px rgba(162,162,211,.25);
+      --outline:0 0 0 1px rgba(162,162,211,.25);
+      --bg-grad-1: radial-gradient(circle at top, rgba(99,102,241,.10), transparent 32%),
+                   radial-gradient(circle at 80% 20%, rgba(34,211,238,.10), transparent 28%),
+                   linear-gradient(135deg,#f8fafc 0%,#eef2ff 45%,#e2e8f0 100%);
+      --info-bg:rgba(162,162,211,.10);
+      --button-bg:#ffffff;
+      --button-hover:rgba(162,162,211,.10);
+      --divider:rgba(162,162,211,.40);
+      --input-bg:rgba(255,255,255,.80);
+      --stroke:#ffffff;
+    }
+
+    * { box-sizing: border-box; }
+    html,body { margin:0; min-height:100%; font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); transition: background .25s ease, color .25s ease; }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      padding: 32px 16px;
+      overflow: hidden;
+    }
+
+    .bg-layer {
+      position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+      background: var(--bg-grad-1);
+    }
+    .overlay { position:absolute; inset:0; background: rgba(2,6,23,.28); }
+    body.light .overlay { background: rgba(255,255,255,.12); }
+
+    .blob {
+      position:absolute; border-radius:999px; filter: blur(110px); animation: calcPulse 7s ease-in-out infinite;
+    }
+    .blob.a { left:-128px; top:-140px; width:820px; height:820px; background:rgba(19,24,105,.40); animation: calcFloatA 12s ease-in-out infinite, calcPulse 6s ease-in-out infinite; }
+    .blob.b { right:-220px; top:2%; width:960px; height:960px; background:rgba(8,49,66,.34); filter: blur(120px); animation: calcFloatB 14s ease-in-out infinite, calcPulse 7s ease-in-out infinite; }
+    .blob.c { left:14%; bottom:-320px; width:800px; height:800px; background:rgba(8,7,72,.36); animation: calcFloatC 13s ease-in-out infinite, calcPulse 8s ease-in-out infinite; }
+    .blob.d { right:10%; bottom:-250px; width:760px; height:760px; background:rgba(52,52,79,.28); filter: blur(100px); animation: calcFloatD 16s ease-in-out infinite, calcPulse 9s ease-in-out infinite; }
+
+    body.light .blob.a { background: rgba(196,181,253,.28); }
+    body.light .blob.b { background: rgba(103,232,249,.24); }
+    body.light .blob.c { background: rgba(165,180,252,.24); }
+    body.light .blob.d { background: rgba(203,213,225,.26); }
+
+    @keyframes calcFloatA {
+      0% { transform: translate3d(-10%, 0%, 0) scale(1); }
+      50% { transform: translate3d(10%, 8%, 0) scale(1.08); }
+      100% { transform: translate3d(-10%, 0%, 0) scale(1); }
+    }
+    @keyframes calcFloatB {
+      0% { transform: translate3d(0%, -8%, 0) scale(1.05); }
+      50% { transform: translate3d(-10%, 8%, 0) scale(0.95); }
+      100% { transform: translate3d(0%, -8%, 0) scale(1.05); }
+    }
+    @keyframes calcFloatC {
+      0% { transform: translate3d(8%, 4%, 0) scale(1); }
+      50% { transform: translate3d(-8%, -10%, 0) scale(1.1); }
+      100% { transform: translate3d(8%, 4%, 0) scale(1); }
+    }
+    @keyframes calcFloatD {
+      0% { transform: translate3d(0%, 0%, 0) scale(1.1); }
+      50% { transform: translate3d(8%, -6%, 0) scale(0.9); }
+      100% { transform: translate3d(0%, 0%, 0) scale(1.1); }
+    }
+    @keyframes calcPulse {
+      0% { opacity: .72; }
+      50% { opacity: .92; }
+      100% { opacity: .72; }
+    }
+
+    .container { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; }
+    .container { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; }
+    .topbar {
+      position: relative;
+      z-index: 2;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:24px;
+      margin-bottom:24px;
+      flex-wrap:wrap;
+      padding:18px 18px;
+      border:1px solid rgba(162,162,211,.22);
+      border-radius:24px;
+      background: color-mix(in srgb, var(--panel) 84%, transparent);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 0 24px rgba(97,99,244,.10);
+    }
+    .header-left { min-width: 280px; flex: 1 1 460px; }
+    h1 { margin:0; font-size: clamp(2rem, 2.8vw, 2.5rem); line-height:1.1; }
+    .subtitle { margin-top:8px; max-width:720px; color: var(--text-soft); font-size: .95rem; }
+
+    .toolbar {
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:12px;
+      flex:0 0 auto;
+      flex-wrap:nowrap;
+      padding:12px 16px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background: color-mix(in srgb, var(--panel) 96%, transparent);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      white-space:nowrap;
+      box-shadow: 0 0 24px rgba(97,99,244,.10);
+      transition: border-color .25s ease, background .25s ease;
+    }
+    body.light .toolbar { box-shadow: 0 8px 22px rgba(148,163,184,.10); }
+
+    #copyBudgetBtn {
+      min-width: 176px;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #copyBudgetBtn::after {
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      opacity:0;
+      transition:opacity .3s ease;
+      background: radial-gradient(circle at center, rgba(34,197,94,.25), transparent 70%);
+      pointer-events:none;
+    }
+    #copyBudgetBtn:hover {
+      border-color: rgba(34,197,94,.60);
+      box-shadow: 0 0 14px rgba(34,197,94,.18);
+    }
+    #copyBudgetBtn:hover::after { opacity:1; }
+
+    #exportPdfBtn { min-width: 144px; justify-content: center; position: relative; overflow: hidden; }
+    #exportPdfBtn::after {
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      opacity:0;
+      transition:opacity .3s ease;
+      background: radial-gradient(circle at center, rgba(239,68,68,.25), transparent 70%);
+      pointer-events:none;
+    }
+    #exportPdfBtn:hover { border-color: rgba(239,68,68,.60); }
+    #exportPdfBtn:hover::after { opacity:1; }
+    #exportPdfBtn.exporting { border-color: rgba(239,68,68,.75); box-shadow: 0 0 14px rgba(239,68,68,.22); }
+
+
+    .toggle-wrap { display:flex; align-items:center; gap:10px; color: var(--text-soft); font-size: .95rem; }
+    .icon-mini { width:16px; height:16px; opacity:.9; }
+
+    .switch {
+      position:relative; width:52px; height:30px; background: rgba(148,163,184,.28);
+      border:1px solid var(--border); border-radius:999px; cursor:pointer; transition:.25s ease;
+    }
+    .switch::after {
+      content:""; position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%;
+      background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.18); transition:.25s ease;
+    }
+    body.dark .switch { background: rgba(162,162,211,.18); }
+    body.dark .switch.active::after { left:25px; background:#e2e8f0; }
+    body.light .switch.active::after { left:25px; }
+
+    .btn {
+      border:1px solid rgba(162,162,211,.35); background: var(--button-bg); color: var(--text);
+      border-radius:14px; height:42px; padding:0 14px; display:inline-flex; align-items:center; gap:8px;
+      cursor:pointer; transition:.2s ease; font-weight:600;
+    }
+    .btn:hover { background: var(--button-hover); border-color: var(--accent); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0) scale(.98); }
+    .btn.copied { border-color: rgba(34,197,94,.75); box-shadow: 0 0 14px rgba(34,197,94,.22); }
+
+    .grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:24px; }
+    .card {
+      border:1px solid var(--border); background: var(--panel); backdrop-filter: blur(16px);
+      border-radius:28px; box-shadow: var(--card-shadow);
+    }
+    .card-header { padding:24px 24px 8px; }
+    .card-title { margin:0; font-size:1.25rem; }
+    .card-content { padding: 0 24px 24px; }
+
+    .fields-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .span-2 { grid-column: span 2; }
+
+    .field { display:flex; flex-direction:column; gap:8px; }
+    .label { font-size:.92rem; font-weight:600; color: color-mix(in srgb, var(--text) 84%, white 16%); }
+
+    .label {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      width:max-content;
+    }
+
+    .tooltip-trigger {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      border:1px solid rgba(162,162,211,.36);
+      background:rgba(162,162,211,.12);
+      color:var(--accent);
+      font-size:10px;
+      font-weight:800;
+      line-height:1;
+      cursor:help;
+      position:relative;
+      user-select:none;
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    }
+
+    .tooltip-trigger:hover,
+    .tooltip-trigger.active {
+      transform:scale(1.08);
+      background:rgba(162,162,211,.20);
+      border-color:rgba(162,162,211,.60);
+      box-shadow:0 0 12px rgba(162,162,211,.22);
+    }
+
+    .tooltip-text {
+      position:absolute;
+      left:50%;
+      bottom:calc(100% + 10px);
+      transform:translateX(-50%) translateY(6px) scale(.98);
+      width:245px;
+      max-width:min(245px, calc(100vw - 36px));
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:color-mix(in srgb, var(--panel-2) 96%, transparent);
+      color:var(--text-soft);
+      box-shadow:0 14px 34px rgba(0,0,0,.28), 0 0 18px rgba(162,162,211,.12);
+      backdrop-filter:blur(14px);
+      font-size:12px;
+      font-weight:500;
+      line-height:1.45;
+      text-align:left;
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      z-index:60;
+      transition:opacity .18s ease, visibility .18s ease, transform .18s ease;
+    }
+
+    .tooltip-text::after {
+      content:"";
+      position:absolute;
+      left:50%;
+      top:100%;
+      transform:translateX(-50%);
+      border-width:6px 6px 0 6px;
+      border-style:solid;
+      border-color:var(--border) transparent transparent transparent;
+      opacity:.9;
+    }
+
+    .tooltip-trigger:hover .tooltip-text,
+    .tooltip-trigger.active .tooltip-text,
+    .tooltip-trigger:focus-visible .tooltip-text {
+      opacity:1;
+      visibility:visible;
+      transform:translateX(-50%) translateY(0) scale(1);
+    }
+
+    @media (max-width: 900px) {
+      .tooltip-text {
+        left:0;
+        transform:translateX(0) translateY(6px) scale(.98);
+      }
+      .tooltip-text::after { left:14px; transform:none; }
+      .tooltip-trigger:hover .tooltip-text,
+      .tooltip-trigger.active .tooltip-text,
+      .tooltip-trigger:focus-visible .tooltip-text {
+        transform:translateX(0) translateY(0) scale(1);
+      }
+    }
+
+    .control-wrap { position:relative; }
+    .control-icon, .control-suffix {
+      position:absolute; top:50%; transform:translateY(-50%); z-index:10; color: var(--accent); opacity:1;
+      pointer-events:none;
+    }
+    .control-icon { left:12px; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; transition: color .22s ease, filter .22s ease, transform .22s ease; }
+    .control-icon svg { width:18px; height:18px; stroke: currentColor; stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round; transition: transform .22s ease, filter .22s ease, stroke-dashoffset .4s ease; }
+    .control-suffix { right:12px; font-size:.78rem; font-weight:600; }
+
+    .control, select.control {
+      width:100%; height:44px; border-radius:18px; border:1px solid var(--border-strong);
+      background: var(--input-bg); color: var(--text); outline:none; padding:0 42px 0 38px;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+      box-shadow:none; font-size:.95rem;
+    }
+    .control.plain { padding-left:14px; }
+    .control:hover { transform: scale(1.015); box-shadow: 0 0 16px rgba(162,162,211,.34), inset 0 0 0 1px rgba(162,162,211,.10); }
+    .control:focus { box-shadow: 0 0 0 1px rgba(162,162,211,.45), 0 0 22px rgba(162,162,211,.22); border-color: rgba(162,162,211,.68); }
+    .control:active { transform: scale(1.01); box-shadow: var(--active-shadow); }
+    .control::placeholder { color: rgba(162,162,211,.60); }
+    .control-wrap:hover .control-icon,
+    .control-wrap:focus-within .control-icon { transform: translateY(-50%) scale(1.12); filter: drop-shadow(0 0 8px rgba(162,162,211,.60)); }
+    .control-wrap:focus-within .control-icon svg { animation: iconStrokePulse .85s ease both; }
+
+    @keyframes iconStrokePulse {
+      0% { transform: scale(1); opacity:.82; }
+      45% { transform: scale(1.16); opacity:1; }
+      100% { transform: scale(1); opacity:1; }
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+    input[type=number] { -moz-appearance:textfield; appearance:textfield; }
+
+    .time-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+    .info-box {
+      border:1px dashed rgba(162,162,211,.30); background: var(--info-bg); color: var(--text-soft);
+      border-radius:18px; padding:16px; font-size:.95rem;
+    }
+    .info-box strong { color: var(--text); }
+    .info-box .muted { color: var(--text-muted); font-size:.78rem; margin-left:8px; }
+
+    .summary-card {
+      border:1px solid var(--border); background: color-mix(in srgb, var(--panel-2) 70%, transparent);
+      border-radius:24px; padding:20px; transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    }
+    .summary-card:hover { transform: translateY(-2px); box-shadow: 0 0 24px rgba(162,162,211,.16); border-color: rgba(162,162,211,.48); }
+    .summary-card.is-active { box-shadow: 0 0 28px rgba(162,162,211,.16), inset 0 0 0 1px rgba(162,162,211,.08); }
+    .summary-head { display:flex; justify-content:space-between; gap:16px; align-items:center; }
+    .summary-title { color: var(--text-soft); font-size:.92rem; }
+    .summary-value { margin-top:10px; font-size:1.85rem; font-weight:700; }
+    .summary-subtitle { margin-top:16px; font-size:.92rem; color: var(--text-muted); }
+    .summary-badge {
+      width:44px; height:44px; display:grid; place-items:center; border-radius:18px;
+      color: var(--accent); background: rgba(162,162,211,.10); box-shadow: inset 0 0 0 1px rgba(162,162,211,.20);
+      transition: transform .22s ease, filter .22s ease, background .22s ease;
+    }
+    .summary-card:hover .summary-badge { transform: scale(1.07); filter: drop-shadow(0 0 10px rgba(162,162,211,.40)); background: rgba(162,162,211,.14); }
+    .summary-badge svg { width:22px; height:22px; stroke: currentColor; stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+
+    .section-bottom { margin-top:24px; }
+    .bottom-grid { display:grid; grid-template-columns: .95fr 1.25fr; gap:32px; align-items:center; }
+    .summary-stack { display:grid; gap:16px; align-self:center; }
+
+    .chart-side {
+      display:grid; grid-template-columns: .95fr 1.05fr; gap:24px; align-items:center;
+      border-left:1px solid var(--divider); padding-left:32px;
+    }
+
+    .canvas-wrap { height:280px; width:100%; display:flex; align-items:center; justify-content:center; }
+    #pieCanvas { max-width:100%; max-height:100%; }
+    .legend { display:flex; flex-direction:column; gap:12px; }
+    .legend-row {
+      display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:12px;
+      font-size:.92rem;
+    }
+    .legend-dot { width:12px; height:12px; border-radius:50%; }
+    .legend-name { color: var(--text-soft); }
+    .legend-value { color: var(--text); font-weight:600; }
+    .legend-percent { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .empty {
+      height:100%; min-height:280px; display:flex; align-items:center; justify-content:center;
+      border:1px dashed rgba(162,162,211,.30); border-radius:24px; color: rgba(162,162,211,.85);
+      text-align:center; padding:16px;
+    }
+
+    .accent-violet { color:#a78bfa; }
+    .accent-emerald { color:#34d399; }
+    .accent-amber { color:#fbbf24; }
+
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+    }
+
+
+    @media (max-width: 1180px) {
+      .topbar { align-items:flex-start; }
+      .toolbar {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .bottom-grid, .chart-side { grid-template-columns:1fr; }
+      .chart-side { border-left:none; padding-left:0; }
+      .summary-stack { grid-template-columns:1fr 1fr 1fr; }
+    }
+    @media (max-width: 900px) {
+      .grid-2, .fields-grid, .time-grid, .summary-stack { grid-template-columns:1fr; }
+      .span-2 { grid-column: auto; }
+      .card-header { padding:20px 20px 8px; }
+      .card-content { padding:0 20px 20px; }
+    }
+  </style>
+</head>
+<body class="dark">
+  <div class="page">
+    <div class="bg-layer">
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+      <div class="blob c"></div>
+      <div class="blob d"></div>
+      <div class="overlay"></div>
+    </div>
+
+    <div class="container">
+      <div class="topbar">
+        <div class="header-left">
+          <h1>Calculadora de impresión 3D</h1>
+          <div class="subtitle">Introduce los datos de tu impresión y obtén automáticamente el desglose de costes, el precio recomendado y el beneficio aplicado.</div>
+        </div>
+
+        <div class="toolbar">
+          <div class="toggle-wrap">
+            <span class="icon-mini">☀</span>
+            <button id="themeSwitch" class="switch active" aria-label="Cambiar tema"></button>
+            <span class="icon-mini">☾</span>
+          </div>
+          <button class="btn" id="copyBudgetBtn">⧉ Copiar presupuesto</button>
+          <button class="btn" id="exportPdfBtn">⇩ Exportar PDF</button>
+          <button class="btn" id="resetBtn">↺ Reiniciar</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <section class="card">
+          <div class="card-header"><h2 class="card-title">Datos de impresión</h2></div>
+          <div class="card-content">
+            <div class="fields-grid">
+              <div class="field span-2">
+                <label class="label" for="material">Material <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Tipo de material utilizado. Sirve para identificar el presupuesto y puede afectar al coste, resistencia y acabado de la pieza.</span></span></label>
+                <div class="control-wrap">
+                  <select id="material" class="control plain">
+                    <option>PLA</option>
+                    <option>PETG</option>
+                    <option>ABS</option>
+                    <option>TPU</option>
+                    <option>RESINA</option>
+                    <option>OTRO</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label" for="peso">Peso de la pieza <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Peso final del modelo en gramos, normalmente obtenido desde el laminador tras preparar la impresión.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8.5 12 3 3 8.5"/><path d="M21 8.5v7L12 21l-9-5.5v-7"/><path d="M12 12v9"/><path d="m3.5 9 8.5 5 8.5-5"/></svg></span>
+                  <input id="peso" class="control" type="text" inputmode="decimal" min="0" step="0.1" placeholder="Ej. 125" />
+                  <span class="control-suffix">g</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label" for="precioFilamento">Precio del filamento <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Precio del rollo convertido a €/kg. Se usa junto al peso para calcular el coste real de material.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M5 5h14"/><path d="M5 19h14"/><path d="M19 12c2 0 3 1 3 3s-1 3-3 3"/></svg></span>
+                  <input id="precioFilamento" class="control" type="text" inputmode="decimal" min="0" step="0.01" placeholder="Ej. 19.99" />
+                  <span class="control-suffix">€/kg</span>
+                </div>
+              </div>
+
+              <div class="field span-2">
+                <label class="label">Tiempo de impresión <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Duración estimada de la impresión. Afecta al consumo eléctrico y al coste por uso de máquina.</span></span></label>
+                <div class="time-grid">
+                  <div class="control-wrap">
+                    <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+                    <input id="horas" class="control" type="text" inputmode="decimal" min="0" step="1" placeholder="Horas" />
+                    <span class="control-suffix">h</span>
+                  </div>
+                  <div class="control-wrap">
+                    <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+                    <input id="minutos" class="control" type="text" inputmode="decimal" min="0" max="59" step="1" placeholder="Min" />
+                    <span class="control-suffix">min</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-box span-2">
+                Tiempo total calculado:
+                <strong id="tiempoTotalTexto">0 h 0 min</strong>
+                <span class="muted" id="tiempoTotalHoras">(0.00 h)</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header"><h2 class="card-title">Costes y márgenes</h2></div>
+          <div class="card-content">
+            <div class="fields-grid">
+              <div class="field">
+                <label class="label" for="consumoVatios">Consumo impresora <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Potencia media aproximada de la impresora durante el trabajo, expresada en vatios.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7l0-7z"/></svg></span>
+                  <input id="consumoVatios" class="control" type="text" inputmode="decimal" min="0" step="1" placeholder="Ej. 150" />
+                  <span class="control-suffix">W</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="precioLuz">Precio luz <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Coste del kWh según tu tarifa eléctrica. Se multiplica por consumo y tiempo de impresión.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M8 14c-1.2-1.1-2-2.8-2-4.5A6 6 0 0 1 18 9.5c0 1.7-.8 3.4-2 4.5-.7.6-1 1.5-1 2H9c0-.5-.3-1.4-1-2z"/></svg></span>
+                  <input id="precioLuz" class="control" type="text" inputmode="decimal" min="0" step="0.001" placeholder="Ej. 0.18" />
+                  <span class="control-suffix">€/kWh</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="costeMaquinaHora">Coste máquina <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Coste estimado por hora de uso de la impresora, incluyendo amortización, desgaste y uso general del equipo.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16V9c0-2.2 1.8-4 4-4h6c2.2 0 4 1.8 4 4v7"/><path d="M6 16h12"/><path d="M7 9h8"/><circle cx="8" cy="18" r="2"/><circle cx="16" cy="18" r="2"/><path d="M6 20h12"/><path d="M18 8h2"/><path d="M20 8c1.1 0 2-.9 2-2"/><path d="M3 5c1.6 0 1.6-2 3.2-2"/></svg></span>
+                  <input id="costeMaquinaHora" class="control" type="text" inputmode="decimal" min="0" step="0.01" placeholder="Ej. 0.50" />
+                  <span class="control-suffix">€/h</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="mantenimiento">Mantenimiento / desgaste <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Importe adicional para cubrir boquillas, cama, lubricación, recambios o desgaste asociado a la impresión.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5 5L3 18l3 3 6.7-6.7a4 4 0 0 0 5-5l-2.6 2.6-3-3 2.6-2.6z"/></svg></span>
+                  <input id="mantenimiento" class="control" type="text" inputmode="decimal" min="0" step="0.01" placeholder="Ej. 0.75" />
+                  <span class="control-suffix">€</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="manoObraHoras">Horas de mano de obra <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Tiempo dedicado a preparación, laminado, retirada de soportes, limpieza, revisión y empaquetado.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="3"/><path d="M3 21v-2a5 5 0 0 1 10 0v2"/><circle cx="17" cy="17" r="4"/><path d="M17 15v2l1.5 1"/></svg></span>
+                  <input id="manoObraHoras" class="control" type="text" inputmode="decimal" min="0" step="0.1" placeholder="Ej. 0.5" />
+                  <span class="control-suffix">h</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="manoObraTarifa">Tarifa mano de obra <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Valor económico de cada hora de trabajo manual aplicada al proyecto.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14a8 8 0 0 1 16 0"/><path d="M3 14h18"/><path d="M8 14V9"/><path d="M16 14V9"/><path d="M12 14V6"/><path d="M7 18h10"/><path d="M9 21h6"/></svg></span>
+                  <input id="manoObraTarifa" class="control" type="text" inputmode="decimal" min="0" step="0.01" placeholder="Ej. 15" />
+                  <span class="control-suffix">€/h</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="extras">Extras / imprevistos <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Costes adicionales no contemplados: embalaje, adhesivos, pruebas, pequeñas correcciones o consumibles extra.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/><path d="M18 3l3 3"/><path d="M19.5 4.5 16 8"/></svg></span>
+                  <input id="extras" class="control" type="text" inputmode="decimal" min="0" step="0.01" placeholder="Ej. 1.20" />
+                  <span class="control-suffix">€</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="porcentajeFallo">Porcentaje de fallo <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Margen para cubrir impresiones fallidas, repeticiones, mermas o piezas que no salgan correctamente.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.3 2.7 18a2 2 0 0 0 1.7 3h15.2a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
+                  <input id="porcentajeFallo" class="control" type="text" inputmode="decimal" min="0" step="0.1" placeholder="Ej. 10" />
+                  <span class="control-suffix">%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="porcentajeMargen">Margen de beneficio <span class="tooltip-trigger" tabindex="0" aria-label="Ayuda">?<span class="tooltip-text">Porcentaje de beneficio aplicado sobre el coste total para calcular el precio final recomendado.</span></span></label>
+                <div class="control-wrap">
+                  <span class="control-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/><path d="M4 21h16"/></svg></span>
+                  <input id="porcentajeMargen" class="control" type="text" inputmode="decimal" min="0" step="0.1" placeholder="Ej. 30" />
+                  <span class="control-suffix">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="card section-bottom">
+        <div class="card-header"><h2 class="card-title">Desglose de costes</h2></div>
+        <div class="card-content">
+          <div class="bottom-grid">
+            <div class="summary-stack">
+              <div class="summary-card">
+                <div class="summary-head">
+                  <div>
+                    <div class="summary-title">Coste total</div>
+                    <div class="summary-value accent-violet" id="costeTotal">0,00 €</div>
+                  </div>
+                  <div class="summary-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8"/><path d="M8 11h.01"/><path d="M12 11h.01"/><path d="M16 11h.01"/><path d="M8 15h.01"/><path d="M12 15h.01"/><path d="M16 15h.01"/><path d="M8 19h.01"/><path d="M12 19h.01"/><path d="M16 19h.01"/></svg></div>
+                </div>
+                <div class="summary-subtitle">Coste real de la impresión</div>
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-head">
+                  <div>
+                    <div class="summary-title">Precio final</div>
+                    <div class="summary-value accent-emerald" id="precioFinal">0,00 €</div>
+                  </div>
+                  <div class="summary-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 5.5A7 7 0 1 0 17 18.5"/><path d="M3 10h11"/><path d="M3 14h10"/></svg></div>
+                </div>
+                <div class="summary-subtitle">Con el margen aplicado</div>
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-head">
+                  <div>
+                    <div class="summary-title">Beneficio</div>
+                    <div class="summary-value accent-amber" id="beneficio">0,00 €</div>
+                  </div>
+                  <div class="summary-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/><path d="M4 21h16"/></svg></div>
+                </div>
+                <div class="summary-subtitle" id="beneficioTexto">Beneficio obtenido (0.0%)</div>
+              </div>
+            </div>
+
+            <div class="chart-side">
+              <div class="canvas-wrap" id="canvasWrap">
+                <canvas id="pieCanvas" width="280" height="280"></canvas>
+                <div class="empty" id="emptyChart" style="display:none;">Introduce valores para visualizar el gráfico</div>
+              </div>
+              <div class="legend" id="legend"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULTS = {
+      material: "PLA",
+      peso: "",
+      horas: "",
+      minutos: "",
+      precioFilamento: "",
+      consumoVatios: "",
+      precioLuz: "",
+      costeMaquinaHora: "",
+      manoObraHoras: "",
+      manoObraTarifa: "",
+      mantenimiento: "",
+      extras: "",
+      porcentajeFallo: "",
+      porcentajeMargen: "",
+    };
+
+    const ids = [
+      "material","peso","horas","minutos","precioFilamento","consumoVatios","precioLuz",
+      "costeMaquinaHora","manoObraHoras","manoObraTarifa","mantenimiento","extras",
+      "porcentajeFallo","porcentajeMargen"
+    ];
+
+    const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+    const out = {
+      tiempoTotalTexto: document.getElementById("tiempoTotalTexto"),
+      tiempoTotalHoras: document.getElementById("tiempoTotalHoras"),
+      costeTotal: document.getElementById("costeTotal"),
+      precioFinal: document.getElementById("precioFinal"),
+      beneficio: document.getElementById("beneficio"),
+      beneficioTexto: document.getElementById("beneficioTexto"),
+      legend: document.getElementById("legend"),
+      pieCanvas: document.getElementById("pieCanvas"),
+      emptyChart: document.getElementById("emptyChart"),
+    };
+
+    let currentBudget = null;
+
+    const animatedValues = { costeTotal: 0, precioFinal: 0, beneficio: 0 };
+    const valueAnimations = {};
+    let pieAnimationFrame = null;
+    let pieDisplayedData = [];
+    let pieAnimationStartData = [];
+    let pieAnimationTargetData = [];
+    let pieRenderTimeout = null;
+    let pieHasRenderedOnce = false;
+
+    function setSummaryActive(element, active) {
+      const card = element?.closest(".summary-card");
+      if (card) card.classList.toggle("is-active", !!active);
+    }
+
+    function animateMoneyOutput(key, nextValue) {
+      const element = out[key];
+      const startValue = animatedValues[key] || 0;
+      const endValue = Number.isFinite(nextValue) ? nextValue : 0;
+      const duration = 360;
+      const startTime = performance.now();
+
+      if (valueAnimations[key]) cancelAnimationFrame(valueAnimations[key]);
+
+      function tick(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = startValue + (endValue - startValue) * eased;
+        element.textContent = formatMoney(current);
+        if (progress < 1) {
+          valueAnimations[key] = requestAnimationFrame(tick);
+        } else {
+          animatedValues[key] = endValue;
+          element.textContent = formatMoney(endValue);
+        }
+      }
+
+      valueAnimations[key] = requestAnimationFrame(tick);
+    }
+
+    function parseNum(value) {
+      let raw = String(value ?? "").trim().replace(",", ".");
+
+      // Permite estados intermedios de escritura como "1." o "1,"
+      // interpretandolos como enteros para que el grafico no desaparezca.
+      if (/^[-+]?\d+\.$/.test(raw)) {
+        raw = raw.slice(0, -1);
+      }
+
+      const n = parseFloat(raw);
+      return Number.isFinite(n) ? n : 0;
+    }
+    function clampMinutes(value) {
+      const num = Math.max(0, Math.floor(parseNum(value)));
+      return Math.min(num, 59);
+    }
+    function formatMoney(value) {
+      return new Intl.NumberFormat("es-ES", {
+        style: "currency",
+        currency: "EUR",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value || 0);
+    }
+
+    function getTheme() {
+      const saved = localStorage.getItem("calc3d-theme");
+      return saved === "light" ? "light" : "dark";
+    }
+    function applyTheme(theme) {
+      document.body.className = theme;
+      document.getElementById("themeSwitch").classList.toggle("active", theme === "dark");
+      localStorage.setItem("calc3d-theme", theme);
+    }
+
+    function calculate() {
+      const peso = parseNum(el.peso.value);
+      const horasBase = parseNum(el.horas.value);
+      const minutosBase = clampMinutes(el.minutos.value);
+      if (el.minutos.value !== "" && String(minutosBase) !== el.minutos.value) {
+        el.minutos.value = minutosBase;
+      }
+
+      const horasImpresion = horasBase + minutosBase / 60;
+      const precioFilamento = parseNum(el.precioFilamento.value);
+      const consumoVatios = parseNum(el.consumoVatios.value);
+      const precioLuz = parseNum(el.precioLuz.value);
+      const costeMaquinaHora = parseNum(el.costeMaquinaHora.value);
+      const manoObraHoras = parseNum(el.manoObraHoras.value);
+      const manoObraTarifa = parseNum(el.manoObraTarifa.value);
+      const mantenimiento = parseNum(el.mantenimiento.value);
+      const extras = parseNum(el.extras.value);
+      const porcentajeFallo = parseNum(el.porcentajeFallo.value);
+      const porcentajeMargen = parseNum(el.porcentajeMargen.value);
+
+      const costeMaterial = (peso / 1000) * precioFilamento;
+      const costeElectrico = (consumoVatios / 1000) * horasImpresion * precioLuz;
+      const costeMaquina = horasImpresion * costeMaquinaHora;
+      const costeManoObra = manoObraHoras * manoObraTarifa;
+
+      const subtotal = costeMaterial + costeElectrico + costeMaquina + costeManoObra + mantenimiento + extras;
+      const costeMerma = subtotal * (porcentajeFallo / 100);
+      const costeTotal = subtotal + costeMerma;
+      const precioFinal = costeTotal * (1 + porcentajeMargen / 100);
+      const beneficio = precioFinal - costeTotal;
+
+      currentBudget = {
+        fecha: new Date(), material: el.material.value, peso, horasBase, minutosBase,
+        horasImpresion, precioFilamento, consumoVatios, precioLuz, costeMaquinaHora,
+        mantenimiento, manoObraHoras, manoObraTarifa, extras, porcentajeFallo,
+        porcentajeMargen, costeMaterial, costeElectrico, costeMaquina, costeManoObra,
+        costeMerma, subtotal, costeTotal, precioFinal, beneficio
+      };
+
+      out.tiempoTotalTexto.textContent = `${Math.floor(horasBase + minutosBase / 60)} h ${minutosBase % 60} min`;
+      out.tiempoTotalHoras.textContent = `(${horasImpresion.toFixed(2)} h)`;
+      animateMoneyOutput("costeTotal", costeTotal);
+      animateMoneyOutput("precioFinal", precioFinal);
+      animateMoneyOutput("beneficio", beneficio);
+      out.beneficioTexto.textContent = `Beneficio obtenido (${porcentajeMargen.toFixed(1)}%)`;
+
+      setSummaryActive(out.costeTotal, costeTotal > 0);
+      setSummaryActive(out.precioFinal, precioFinal > 0);
+      setSummaryActive(out.beneficio, beneficio > 0);
+
+      const chartData = [
+        { key: "material", name: "Filamento", value: costeMaterial, color: "#e11d48" },
+        { key: "electricidad", name: "Electricidad", value: costeElectrico, color: "#16a34a" },
+        { key: "maquina", name: "Máquina", value: costeMaquina, color: "#2563eb" },
+        { key: "manoObra", name: "Mano de obra", value: costeManoObra, color: "#f59e0b" },
+        { key: "mantenimiento", name: "Mantenimiento / desgaste", value: mantenimiento, color: "#7c3aed" },
+        { key: "merma", name: "Merma / fallo", value: costeMerma, color: "#ec4899" },
+        { key: "extras", name: "Extras / imprevistos", value: extras, color: "#06b6d4" },
+        { key: "beneficio", name: "Beneficio", value: beneficio, color: "#84cc16" },
+      ].filter(item => item.value > 0);
+
+      renderLegend(chartData, precioFinal);
+      schedulePieRender(chartData);
+    }
+
+    function renderLegend(data, total) {
+      out.legend.innerHTML = "";
+      if (!data.length) {
+        const p = document.createElement("p");
+        p.style.color = "var(--text-muted)";
+        p.style.fontSize = ".92rem";
+        p.textContent = "La leyenda aparecerá automáticamente cuando haya valores mayores que 0.";
+        out.legend.appendChild(p);
+        return;
+      }
+      for (const item of data) {
+        const row = document.createElement("div");
+        row.className = "legend-row";
+        const pct = total > 0 ? (item.value / total) * 100 : 0;
+        row.innerHTML = `
+          <span class="legend-dot" style="background:${item.color}"></span>
+          <span class="legend-name">${item.name}</span>
+          <span class="legend-value">${formatMoney(item.value)}</span>
+          <span class="legend-percent">${pct.toFixed(1)}%</span>
+        `;
+        out.legend.appendChild(row);
+      }
+    }
+
+    const PIE_ORDER = [
+      "material",
+      "electricidad",
+      "maquina",
+      "manoObra",
+      "mantenimiento",
+      "merma",
+      "extras",
+      "beneficio",
+    ];
+
+    const PIE_META = {
+      material: { key: "material", name: "Filamento", color: "#e11d48" },
+      electricidad: { key: "electricidad", name: "Electricidad", color: "#16a34a" },
+      maquina: { key: "maquina", name: "Máquina", color: "#2563eb" },
+      manoObra: { key: "manoObra", name: "Mano de obra", color: "#f59e0b" },
+      mantenimiento: { key: "mantenimiento", name: "Mantenimiento / desgaste", color: "#7c3aed" },
+      merma: { key: "merma", name: "Merma / fallo", color: "#ec4899" },
+      extras: { key: "extras", name: "Extras / imprevistos", color: "#06b6d4" },
+      beneficio: { key: "beneficio", name: "Beneficio", color: "#84cc16" },
+    };
+
+    function sortPieData(data) {
+      return [...data].sort((a, b) => PIE_ORDER.indexOf(a.key) - PIE_ORDER.indexOf(b.key));
+    }
+
+    function dataToValueMap(data) {
+      const map = new Map();
+      data.forEach(item => map.set(item.key, item.value || 0));
+      return map;
+    }
+
+    function normalizePieData(data, includeZero = false) {
+      const valueMap = dataToValueMap(data);
+      return PIE_ORDER
+        .map(key => ({ ...PIE_META[key], value: valueMap.get(key) || 0 }))
+        .filter(item => includeZero || item.value > 0.001);
+    }
+
+    function getPieValue(data, key) {
+      return data.find(item => item.key === key)?.value || 0;
+    }
+
+    function getPieSegments(data) {
+      const visibleData = normalizePieData(data).filter(item => item.value > 0.001);
+      const total = visibleData.reduce((sum, item) => sum + item.value, 0);
+      let startAngle = -Math.PI / 2; // 12 en punto, como un reloj
+
+      return visibleData.map(item => {
+        const slice = total > 0 ? (item.value / total) * Math.PI * 2 : 0;
+        const segment = {
+          ...item,
+          total,
+          startAngle,
+          endAngle: startAngle + slice,
+        };
+        startAngle += slice;
+        return segment;
+      });
+    }
+
+    function drawPieSegments(segments, sweepProgress = 1, appearingKeys = new Set()) {
+      const canvas = out.pieCanvas;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (!segments.length) return;
+
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const radius = 118;
+      const stroke = getComputedStyle(document.body).getPropertyValue('--stroke').trim() || '#0f172a';
+      const sweepLimit = -Math.PI / 2 + Math.PI * 2 * Math.max(0, Math.min(sweepProgress, 1));
+
+      segments.forEach(item => {
+        const visibleEnd = Math.min(item.endAngle, sweepLimit);
+        if (visibleEnd <= item.startAngle) return;
+
+        const isAppearing = appearingKeys.has(item.key);
+        ctx.save();
+        ctx.globalAlpha = isAppearing ? 0.82 : 1;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, item.startAngle, visibleEnd);
+        ctx.closePath();
+        ctx.fillStyle = item.color;
+        ctx.fill();
+
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = isAppearing ? 1.4 : 1;
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+
+    function drawPie(data) {
+      drawPieSegments(getPieSegments(data), 1);
+    }
+
+    function samePieData(a, b) {
+      return PIE_ORDER.every(key => Math.abs(getPieValue(a, key) - getPieValue(b, key)) < 0.001);
+    }
+
+    function getCurrentInterpolatedPieData() {
+      return pieDisplayedData.length ? pieDisplayedData : [];
+    }
+
+    function schedulePieRender(data) {
+      if (pieRenderTimeout) clearTimeout(pieRenderTimeout);
+      pieRenderTimeout = setTimeout(() => {
+        renderPie(normalizePieData(data));
+      }, 90);
+    }
+
+    function renderPie(data) {
+      const canvas = out.pieCanvas;
+      const targetData = normalizePieData(data);
+
+      if (!targetData.length) {
+        if (pieRenderTimeout) clearTimeout(pieRenderTimeout);
+        if (pieAnimationFrame) cancelAnimationFrame(pieAnimationFrame);
+        pieDisplayedData = [];
+        pieHasRenderedOnce = false;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.style.display = "none";
+        out.emptyChart.style.display = "flex";
+        return;
+      }
+
+      canvas.style.display = "block";
+      out.emptyChart.style.display = "none";
+
+      if (pieAnimationFrame) cancelAnimationFrame(pieAnimationFrame);
+
+      const previousData = normalizePieData(getCurrentInterpolatedPieData(), true);
+      const fullTargetData = normalizePieData(targetData, true);
+      const previousKeys = new Set(previousData.filter(item => item.value > 0.001).map(item => item.key));
+      const appearingKeys = new Set(fullTargetData.filter(item => !previousKeys.has(item.key) && item.value > 0.001).map(item => item.key));
+
+      if (!pieHasRenderedOnce) {
+        pieHasRenderedOnce = true;
+        const duration = 900;
+        const startTime = performance.now();
+
+        function firstSweep(now) {
+          const progress = Math.min((now - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          drawPieSegments(getPieSegments(fullTargetData), eased, new Set(fullTargetData.filter(item => item.value > 0.001).map(item => item.key)));
+
+          if (progress < 1) {
+            pieAnimationFrame = requestAnimationFrame(firstSweep);
+          } else {
+            pieDisplayedData = fullTargetData;
+            drawPie(pieDisplayedData);
+            pieAnimationFrame = null;
+          }
+        }
+
+        pieAnimationFrame = requestAnimationFrame(firstSweep);
+        return;
+      }
+
+      if (samePieData(previousData, fullTargetData)) {
+        pieDisplayedData = fullTargetData;
+        drawPie(fullTargetData);
+        return;
+      }
+
+      const duration = appearingKeys.size ? 760 : 560;
+      const startTime = performance.now();
+      const startData = normalizePieData(previousData, true);
+      const endData = normalizePieData(fullTargetData, true);
+
+      function tick(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+
+        pieDisplayedData = PIE_ORDER.map(key => {
+          const startValue = getPieValue(startData, key);
+          const endValue = getPieValue(endData, key);
+          return {
+            ...PIE_META[key],
+            value: startValue + (endValue - startValue) * eased,
+          };
+        });
+
+        // En cambios posteriores NO usamos barrido global: no se reinicia el gráfico.
+        // Cada sección interpola desde su valor anterior al nuevo, y si aparece una nueva,
+        // nace desde valor 0 en su posición fija dentro de la circunferencia.
+        drawPieSegments(getPieSegments(pieDisplayedData), 1, appearingKeys);
+
+        if (progress < 1) {
+          pieAnimationFrame = requestAnimationFrame(tick);
+        } else {
+          pieDisplayedData = endData;
+          drawPie(pieDisplayedData);
+          pieAnimationFrame = null;
+        }
+      }
+
+      pieAnimationFrame = requestAnimationFrame(tick);
+    }
+
+    function formatDecimal(value, digits = 2) {
+      return new Intl.NumberFormat("es-ES", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      }).format(Number.isFinite(value) ? value : 0);
+    }
+
+    function buildBudgetText() {
+      const b = currentBudget || {};
+      const fecha = b.fecha ? b.fecha.toLocaleDateString("es-ES") : new Date().toLocaleDateString("es-ES");
+      return [
+        "PRESUPUESTO DE IMPRESIÓN 3D",
+        `Fecha: ${fecha}`,
+        "",
+        "Datos de la impresión",
+        `• Material: ${b.material || "-"}`,
+        `• Peso de la pieza: ${formatDecimal(b.peso, 1)} g`,
+        `• Tiempo de impresión: ${Math.floor((b.horasBase || 0) + (b.minutosBase || 0) / 60)} h ${(b.minutosBase || 0) % 60} min (${formatDecimal(b.horasImpresion, 2)} h)`,
+        "",
+        "Desglose de costes",
+        `• Filamento: ${formatMoney(b.costeMaterial)}`,
+        `• Electricidad: ${formatMoney(b.costeElectrico)}`,
+        `• Máquina: ${formatMoney(b.costeMaquina)}`,
+        `• Mano de obra: ${formatMoney(b.costeManoObra)}`,
+        `• Mantenimiento / desgaste: ${formatMoney(b.mantenimiento)}`,
+        `• Extras / imprevistos: ${formatMoney(b.extras)}`,
+        `• Merma / fallo (${formatDecimal(b.porcentajeFallo, 1)}%): ${formatMoney(b.costeMerma)}`,
+        "",
+        `Coste total: ${formatMoney(b.costeTotal)}`,
+        `Margen aplicado: ${formatDecimal(b.porcentajeMargen, 1)}%`,
+        `Precio final recomendado: ${formatMoney(b.precioFinal)}`,
+        `Beneficio estimado: ${formatMoney(b.beneficio)}`,
+      ].join("\n");
+    }
+
+    function copyBudget() {
+      const text = buildBudgetText();
+      const btn = document.getElementById("copyBudgetBtn");
+      const originalText = btn.textContent;
+      const markCopied = () => {
+        btn.textContent = "✓ Copiado";
+        btn.classList.add("copied");
+        setTimeout(() => { btn.textContent = originalText; btn.classList.remove("copied"); }, 1400);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(markCopied).catch(() => fallbackCopyBudget(text, markCopied));
+      } else {
+        fallbackCopyBudget(text, markCopied);
+      }
+    }
+
+    function fallbackCopyBudget(text, onDone) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try { document.execCommand("copy"); onDone(); }
+      finally { document.body.removeChild(textarea); }
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function exportBudgetPdf() {
+      const pdfBtn = document.getElementById("exportPdfBtn");
+      const originalPdfText = pdfBtn.textContent;
+      pdfBtn.classList.add("exporting");
+      pdfBtn.textContent = "⇩ Generando PDF";
+      window.setTimeout(() => {
+        pdfBtn.classList.remove("exporting");
+        pdfBtn.textContent = originalPdfText;
+      }, 1200);
+
+      const b = currentBudget || {};
+      const fecha = b.fecha ? b.fecha.toLocaleDateString("es-ES") : new Date().toLocaleDateString("es-ES");
+      const rows = [
+        ["Material", b.material || "-"],
+        ["Peso de la pieza", `${formatDecimal(b.peso, 1)} g`],
+        ["Tiempo de impresión", `${Math.floor((b.horasBase || 0) + (b.minutosBase || 0) / 60)} h ${(b.minutosBase || 0) % 60} min (${formatDecimal(b.horasImpresion, 2)} h)`],
+        ["Filamento", formatMoney(b.costeMaterial)],
+        ["Electricidad", formatMoney(b.costeElectrico)],
+        ["Máquina", formatMoney(b.costeMaquina)],
+        ["Mano de obra", formatMoney(b.costeManoObra)],
+        ["Mantenimiento / desgaste", formatMoney(b.mantenimiento)],
+        ["Extras / imprevistos", formatMoney(b.extras)],
+        [`Merma / fallo (${formatDecimal(b.porcentajeFallo, 1)}%)`, formatMoney(b.costeMerma)],
+      ];
+      const rowsHtml = rows.map(([name, value]) => `<tr><td>${escapeHtml(name)}</td><td>${escapeHtml(value)}</td></tr>`).join("");
+      const printWindow = window.open("", "_blank", "width=900,height=700");
+      if (!printWindow) return;
+      printWindow.document.write(`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8" /><title>Presupuesto impresión 3D</title><style>*{box-sizing:border-box}body{font-family:Inter,Arial,sans-serif;margin:0;color:#0f172a;background:#f8fafc;padding:40px}.sheet{max-width:820px;margin:0 auto;background:#fff;border:1px solid #e2e8f0;border-radius:24px;padding:36px;box-shadow:0 16px 40px rgba(15,23,42,.08)}h1{margin:0 0 8px;font-size:30px}.muted{color:#64748b}.hero{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:28px 0}.box{border:1px solid #e2e8f0;border-radius:18px;padding:16px;background:#f8fafc}.label{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.06em}.value{font-size:22px;font-weight:800;margin-top:6px}.value.final{color:#059669}.value.cost{color:#6366f1}.value.profit{color:#d97706}table{width:100%;border-collapse:collapse;margin-top:18px}td{border-bottom:1px solid #e2e8f0;padding:12px 4px}td:last-child{text-align:right;font-weight:700}.note{margin-top:26px;font-size:13px;color:#64748b}@media print{body{background:#fff;padding:0}.sheet{box-shadow:none;border:none;border-radius:0}.no-print{display:none}}</style></head><body><div class="sheet"><h1>Presupuesto de impresión 3D</h1><div class="muted">Fecha: ${escapeHtml(fecha)}</div><div class="hero"><div class="box"><div class="label">Coste total</div><div class="value cost">${escapeHtml(formatMoney(b.costeTotal))}</div></div><div class="box"><div class="label">Precio final</div><div class="value final">${escapeHtml(formatMoney(b.precioFinal))}</div></div><div class="box"><div class="label">Beneficio</div><div class="value profit">${escapeHtml(formatMoney(b.beneficio))}</div></div></div><table><tbody>${rowsHtml}</tbody></table><p class="note">Presupuesto calculado según los datos introducidos. El precio final incluye un margen del ${escapeHtml(formatDecimal(b.porcentajeMargen, 1))}%.</p><button class="no-print" onclick="window.print()" style="margin-top:20px;padding:12px 16px;border-radius:12px;border:1px solid #cbd5e1;background:#0f172a;color:white;font-weight:700;cursor:pointer">Imprimir / Guardar como PDF</button></div><script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`);
+      printWindow.document.close();
+    }
+
+
+
+    document.querySelectorAll('.tooltip-trigger').forEach(trigger => {
+      trigger.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        document.querySelectorAll('.tooltip-trigger.active').forEach(other => {
+          if (other !== trigger) other.classList.remove('active');
+        });
+        trigger.classList.toggle('active');
+      });
+    });
+
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.tooltip-trigger.active').forEach(trigger => trigger.classList.remove('active'));
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        document.querySelectorAll('.tooltip-trigger.active').forEach(trigger => trigger.classList.remove('active'));
+      }
+    });
+
+    function resetForm() {
+      Object.entries(DEFAULTS).forEach(([key, value]) => {
+        el[key].value = value;
+      });
+      calculate();
+    }
+
+    ids.forEach(id => {
+      el[id].addEventListener("input", calculate);
+    });
+
+    document.getElementById("copyBudgetBtn").addEventListener("click", copyBudget);
+    document.getElementById("exportPdfBtn").addEventListener("click", exportBudgetPdf);
+    document.getElementById("resetBtn").addEventListener("click", resetForm);
+    document.getElementById("themeSwitch").addEventListener("click", () => {
+      const next = document.body.classList.contains("dark") ? "light" : "dark";
+      applyTheme(next);
+      calculate();
+    });
+
+    applyTheme(getTheme());
+    resetForm();
+  </script>
+</body>
+</html>
