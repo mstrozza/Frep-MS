@@ -610,6 +610,137 @@
       h1 { font-size:3rem; }
       .hero-main { min-height:auto; }
     }
+
+    /* Ajustes finales Roadmap + modales móviles */
+    .mini-item { min-width: 0; }
+
+    .mini-item-left {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .roadmap-item-text {
+      display: block;
+      min-width: 0;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .roadmap-item-actions {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .roadmap-delete-btn {
+      color: #dc2626;
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08);
+      font-weight: 900;
+    }
+
+    .roadmap-delete-btn:hover {
+      background: rgba(220, 38, 38, .14);
+      border-color: rgba(220, 38, 38, .55);
+    }
+
+    body.dark .roadmap-delete-btn {
+      color: #fecaca;
+      background: rgba(220, 38, 38, .24);
+      border-color: rgba(248, 113, 113, .42);
+    }
+
+    body.dark .roadmap-delete-btn:hover {
+      background: rgba(220, 38, 38, .34);
+      border-color: rgba(248, 113, 113, .62);
+    }
+
+    #closeAdminBtn,
+    #closeAppPopupBtn {
+      width: auto;
+      min-width: 74px;
+      padding-inline: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .app-popup-head,
+    .admin-head {
+      flex-shrink: 0;
+    }
+
+    .app-popup-modal,
+    .admin-modal {
+      align-items: center;
+      min-height: var(--app-vh, 100dvh);
+    }
+
+    .app-popup-panel,
+    .admin-panel {
+      max-height: calc(var(--app-vh, 100dvh) - 48px);
+    }
+
+    @media (max-width: 640px) {
+      .app-popup-modal,
+      .admin-modal {
+        padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+        align-items: stretch;
+        justify-content: center;
+        min-height: var(--app-vh, 100dvh);
+      }
+
+      .app-popup-panel,
+      .admin-panel {
+        width: 100%;
+        height: calc(var(--app-vh, 100dvh) - max(20px, env(safe-area-inset-top)) - max(20px, env(safe-area-inset-bottom)));
+        max-height: calc(var(--app-vh, 100dvh) - max(20px, env(safe-area-inset-top)) - max(20px, env(safe-area-inset-bottom)));
+        border-radius: 20px;
+      }
+
+      .admin-head {
+        align-items: center;
+      }
+
+      #closeAdminBtn,
+      #closeAppPopupBtn {
+        min-width: 78px;
+        min-height: 40px;
+        height: 40px;
+        padding-inline: 12px;
+        font-size: .88rem;
+        flex: 0 0 auto;
+      }
+
+      .app-popup-title,
+      .admin-head > div {
+        min-width: 0;
+      }
+
+      .app-popup-frame {
+        min-height: 0;
+      }
+
+      .mini-item {
+        align-items: center;
+      }
+
+      .roadmap-item-actions {
+        gap: 6px;
+      }
+
+      .roadmap-icon-btn {
+        width: 34px;
+        height: 34px;
+        flex: 0 0 34px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1183,12 +1314,12 @@
         <div class="mini-item">
           <div class="mini-item-left">
             <span>${getRoadmapEmoji(item.status)}</span>
-            <span>${escapeHtml(item.text)}</span>
+            <span class="roadmap-item-text">${escapeHtml(item.text)}</span>
           </div>
           <div class="roadmap-item-actions">
             <strong>${escapeHtml(item.status)}</strong>
             <button class="roadmap-icon-btn" data-roadmap-edit="${index}" type="button">✏️</button>
-            <button class="roadmap-icon-btn" data-roadmap-delete="${index}" type="button">✕</button>
+            <button class="roadmap-icon-btn roadmap-delete-btn" data-roadmap-delete="${index}" type="button" aria-label="Eliminar idea">✕</button>
           </div>
         </div>
       `).join('');
@@ -1830,6 +1961,16 @@
     saveApps();
     renderApps();
     runCraftLabTests();
+
+
+    function updateViewportHeight() {
+      const height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-vh', `${height}px`);
+    }
+
+    updateViewportHeight();
+    window.addEventListener('resize', updateViewportHeight);
+    window.visualViewport?.addEventListener('resize', updateViewportHeight);
 
     initTheme();
 
