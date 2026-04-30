@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora Simulación Hipoteca</title>
+  <meta name="description" content="Calculadora de hipoteca con fondo neuronal, amortización francesa, tabla con scroll y mapa ITP por CCAA." />
+  <meta name="color-scheme" content="dark light">
+  <style>
+    :root{
+      --bg1:#0b3d46; --bg2:#08323a; --text:#e9f1f3; --muted:#b8c7cc; --accent:#f4a261; --accent-2:#ffd166;
+      --glass: rgba(12,56,64,0.55); --border: rgba(255,255,255,.10); --card: rgba(255,255,255,.03);
+      --field-w: 260px; /* ancho uniforme inputs */
+    }
+    html,body{height:100%}
+    body{
+      margin:0; font-family:sans-serif; color:var(--text);
+      background: radial-gradient(1200px 800px at 20% 10%, #0f4d58 0%, var(--bg1) 55%, var(--bg2) 100%);
+      display:flex; flex-direction:column; min-height:100vh; position:relative
+    }
+    #bg-net{position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none}
+    header, main{position:relative; z-index:1}
+    header{padding:32px 20px; text-align:center; font-weight:900; letter-spacing:.3px;
+      font-size:3.6rem; line-height:1.05;
+      background-image: linear-gradient(180deg, #ffd166, #f4a261 55%, #b87333);
+      -webkit-background-clip: text; background-clip:text; color:transparent;
+    }
+
+    main{flex:1; max-width:1200px; margin:0 auto; padding:20px}
+
+    .card{background:var(--glass); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:18px}
+    h2{margin:0 0 10px}
+
+    /* ===== Formularios ===== */
+    .form-grid{display:grid; grid-template-columns:repeat(2, minmax(240px, 1fr)); column-gap:36px; row-gap:16px; align-items:start; justify-items:start}
+    .form-item{display:flex; flex-direction:column; min-width:0}
+    .form-item input, .form-item select{width:var(--field-w); max-width:100%; box-sizing:border-box}
+    @media (max-width: 820px){ .form-grid{grid-template-columns:1fr} .form-item input, .form-item select{width:100%} }
+
+    label{font-size:13px; opacity:.9}
+    input,select{padding:8px 10px; margin-top:4px; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--text)}
+    input[disabled]{opacity:.75; cursor:not-allowed}
+
+    /* ===== Layout 2 columnas ===== */
+    .grid{display:grid; grid-template-columns: 1fr 1fr; gap:18px; align-items:start}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+    .col{display:flex; flex-direction:column; gap:18px}
+
+    /* ===== Tabla ===== */
+    table{width:100%; border-collapse:collapse; font-size:12px}
+    th,td{border-bottom:1px solid var(--border); padding:6px; text-align:right}
+    th:first-child, td:first-child{text-align:left}
+    .table-wrap{max-height:420px; overflow:auto; border:1px solid var(--border); border-radius:10px; margin-top:10px}
+
+    /* ===== Mapa ITP ===== */
+    #card-mapa{display:flex; flex-direction:column; min-height: 420px} /* asegura altura razonable */
+    .tilemap{display:grid; grid-template-columns:repeat(5,1fr); grid-auto-rows:84px; gap:10px; margin-top:10px}
+    @media (max-width:1100px){ .tilemap{grid-template-columns:repeat(4,1fr)} }
+    @media (max-width:800px){ .tilemap{grid-template-columns:repeat(3,1fr)} }
+    .tile{display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; width:100%; padding:6px; text-align:center; background:var(--card); border:1px solid var(--border); border-radius:8px; cursor:pointer; line-height:1.15; font-size:12px; overflow:hidden}
+    .tile small{display:block; opacity:.85; margin-top:2px}
+    .tile.active{outline:2px solid var(--accent)}
+    .map-spacer{flex:1} /* empuja la línea de info al fondo del card */
+    .info-line{margin-top:28px; color:var(--muted)} /* bajamos aún más la línea de info */
+  </style>
+</head>
+<body>
+  <canvas id="bg-net" aria-hidden="true"></canvas>
+  <header>Calculadora Simulación Hipoteca</header>
+  <main>
+    <div class="grid">
+      <!-- Columna izquierda -->
+      <div class="col">
+        <section class="card" id="card-datos">
+          <h2>Datos del préstamo</h2>
+          <div class="form-grid">
+            <!-- Fila 1: Precio + Plazo (años) -->
+            <div class="form-item"><label>Precio vivienda (€)
+              <input id="precio" type="number" value="250000" min="0" step="500"></label></div>
+            <div class="form-item"><label>Plazo (años)
+              <input id="anos" type="number" value="30" min="1" max="40" step="1"></label></div>
+
+            <!-- Fila 2: % financiación (LTV) + TIN anual (%)  [ORDEN SOLICITADO] -->
+            <div class="form-item"><label>% financiación (LTV)
+              <input id="ltv" type="number" value="80" min="0" max="100" step="1"></label></div>
+            <div class="form-item"><label>TIN anual (%)
+              <input id="tin" type="number" value="3" min="0" step="0.01"></label></div>
+
+            <!-- Fila 3: Importe hipoteca y hueco -->
+            <div class="form-item"><label>Importe hipoteca (€)
+              <input id="principal" type="number" value="200000" disabled title="Se calcula automáticamente como Precio × LTV / 100"></label></div>
+            <div class="form-item"></div>
+
+            <!-- Fila 4: Seguros -->
+            <div class="form-item"><label>Seguro hogar (€/mes)
+              <input id="seguroHogar" type="number" value="20" min="0" step="1"></label></div>
+            <div class="form-item"><label>Seguro vida (€/mes)
+              <input id="seguroVida" type="number" value="25" min="0" step="1"></label></div>
+          </div>
+          <!-- Botón Calcular eliminado -->
+          <div id="resultados" class="info-line"></div>
+        </section>
+
+        <section class="card" id="card-mapa">
+          <h2>Mapa ITP por CCAA</h2>
+          <div class="tilemap" id="mapa">
+            <!-- 17 CCAA + Ceuta y Melilla -->
+            <div class="tile" data-ccaa="Andalucía" data-itp="7">Andalucía<small>7%</small></div>
+            <div class="tile" data-ccaa="Aragón" data-itp="8">Aragón<small>8%</small></div>
+            <div class="tile" data-ccaa="Asturias" data-itp="8">Asturias<small>8%</small></div>
+            <div class="tile" data-ccaa="Baleares" data-itp="8">Baleares<small>8%</small></div>
+            <div class="tile" data-ccaa="Canarias" data-itp="6.5">Canarias<small>6.5%</small></div>
+            <div class="tile" data-ccaa="Cantabria" data-itp="10">Cantabria<small>10%</small></div>
+            <div class="tile" data-ccaa="Castilla-La Mancha" data-itp="9">Castilla-La Mancha<small>9%</small></div>
+            <div class="tile" data-ccaa="Castilla y León" data-itp="8">Castilla y León<small>8%</small></div>
+            <div class="tile" data-ccaa="Cataluña" data-itp="10">Cataluña<small>10%</small></div>
+            <div class="tile" data-ccaa="Comunidad Valenciana" data-itp="10">C. Valenciana<small>10%</small></div>
+            <div class="tile" data-ccaa="Extremadura" data-itp="8">Extremadura<small>8%</small></div>
+            <div class="tile" data-ccaa="Galicia" data-itp="10">Galicia<small>10%</small></div>
+            <div class="tile" data-ccaa="La Rioja" data-itp="7">La Rioja<small>7%</small></div>
+            <div class="tile" data-ccaa="Comunidad de Madrid" data-itp="6">Madrid<small>6%</small></div>
+            <div class="tile" data-ccaa="Región de Murcia" data-itp="8">Murcia<small>8%</small></div>
+            <div class="tile" data-ccaa="Navarra" data-itp="6">Navarra<small>6%</small></div>
+            <div class="tile" data-ccaa="País Vasco" data-itp="4">País Vasco<small>4%</small></div>
+            <div class="tile" data-ccaa="Ceuta" data-itp="10">Ceuta<small>10%</small></div>
+            <div class="tile" data-ccaa="Melilla" data-itp="10">Melilla<small>10%</small></div>
+          </div>
+          <div class="map-spacer"></div>
+          <p class="info-line">CCAA: <span id="ccaaSel">—</span> · ITP: <span id="itpSel">—</span>% · Importe: <strong id="itpImporte">—</strong></p>
+        </section>
+      </div>
+
+      <!-- Columna derecha -->
+      <div class="col">
+        <section class="card table-card" id="card-tabla">
+          <h2>Tabla de amortización</h2>
+          <div class="table-wrap">
+            <table id="tabla"><thead><tr><th>Mes</th><th>Cuota</th><th>Interés</th><th>Amortización</th><th>Pendiente</th></tr></thead><tbody></tbody></table>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ===== Fondo neuronal =====
+    (function(){
+      const c=document.getElementById('bg-net'),ctx=c.getContext('2d');
+      function sizeToPage(){
+        const doc = document.documentElement;
+        const w = Math.max(doc.clientWidth, window.innerWidth||0);
+        const h = Math.max(doc.scrollHeight, doc.clientHeight, window.innerHeight||0);
+        c.width = w; c.height = h;
+      }
+      let to=null; const schedule=()=>{ clearTimeout(to); to=setTimeout(sizeToPage, 120); };
+      sizeToPage();
+      window.addEventListener('resize', schedule);
+      new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,attributes:true});
+
+      const pts=[]; const R=(a,b)=>a+Math.random()*(b-a); const make=()=>({x:R(0,c.width),y:R(0,c.height),vx:R(-.5,.5),vy:R(-.5,.5)});
+      for(let i=0;i<90;i++) pts.push(make());
+      function step(){
+        ctx.clearRect(0,0,c.width,c.height);
+        const accent='#f4a261';
+        for(const p of pts){ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>c.width||p.y<0||p.y>c.height){ p.x=R(0,c.width); p.y=R(0,c.height);} ctx.beginPath(); ctx.arc(p.x,p.y,2,0,6.283); ctx.fillStyle=accent; ctx.fill(); }
+        for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){ const a=pts[i], b=pts[j]; const dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy); if(d<130){ const alpha=1-d/130; ctx.strokeStyle=`rgba(244,162,97,${0.18*alpha})`; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } }
+        requestAnimationFrame(step);
+      }
+      step();
+    })();
+
+    // ===== Entradas/sync =====
+    const precioEl=document.getElementById('precio');
+    const ltvEl=document.getElementById('ltv');
+    const principalEl=document.getElementById('principal');
+    const anosEl=document.getElementById('anos');
+    const tinEl=document.getElementById('tin');
+    const seguroHogarEl=document.getElementById('seguroHogar');
+    const seguroVidaEl=document.getElementById('seguroVida');
+
+    function clampLTV(){ let v=parseFloat(ltvEl.value||0); if(!isFinite(v)) v=0; if(v<0) v=0; if(v>100) v=100; ltvEl.value=v; }
+    function syncPrincipal(){
+      clampLTV();
+      const precio=parseFloat(precioEl.value||0); const ltv=parseFloat(ltvEl.value||0);
+      const valor = Math.round((isFinite(precio)?precio:0) * (isFinite(ltv)?ltv:0) / 100);
+      principalEl.value = isFinite(valor)? valor: 0;
+      updateITPInfo();
+    }
+
+    [precioEl, ltvEl].forEach(el=> el.addEventListener('input', ()=>{ syncPrincipal(); calcular(); }));
+
+    // ===== Mapa ITP =====
+    let currentITP = null; let currentCCAA='—';
+    const ccaaSpan=document.getElementById('ccaaSel');
+    const itpSpan=document.getElementById('itpSel');
+    const itpImporteSpan=document.getElementById('itpImporte');
+
+    function updateITPInfo(){
+      const precio=parseFloat(precioEl.value||0);
+      const importe = (isFinite(currentITP)? precio*currentITP/100 : 0);
+      ccaaSpan.textContent = currentCCAA;
+      itpSpan.textContent = isFinite(currentITP)? currentITP: '—';
+      itpImporteSpan.textContent = new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(importe||0);
+    }
+
+    document.querySelectorAll('#mapa .tile').forEach(tile=>{
+      tile.addEventListener('click',()=>{
+        document.querySelectorAll('#mapa .tile').forEach(t=>t.classList.remove('active'));
+        tile.classList.add('active');
+        currentCCAA = tile.dataset.ccaa; currentITP = parseFloat(tile.dataset.itp);
+        updateITPInfo();
+        calcular();
+      });
+    });
+    // Selección por defecto (Madrid si existe)
+    const def = document.querySelector('#mapa .tile[data-ccaa="Comunidad de Madrid"]') || document.querySelector('#mapa .tile');
+    if(def){ def.click(); }
+
+    // ===== Cálculo hipoteca =====
+    function cuotaMensual(P, r, n){ return r>0? P*r/(1-Math.pow(1+r,-n)) : (n>0? P/n:0); }
+
+    function calcular(){
+      const P=parseFloat(principalEl.value||0);
+      const A=parseInt(anosEl.value||0,10);
+      let i=parseFloat(tinEl.value||0); if(!isFinite(i) || i<0) i=0;
+      if(!(P>0 && A>0)) { document.querySelector('#tabla tbody').innerHTML=''; document.getElementById('resultados').textContent=''; return; }
+      const n=A*12; const r=i/100/12; const cuota = cuotaMensual(P,r,n);
+
+      const segH = parseFloat(seguroHogarEl.value||0); const segV = parseFloat(seguroVidaEl.value||0);
+      const cuotaTotal = cuota + (isFinite(segH)?segH:0) + (isFinite(segV)?segV:0);
+
+      let restante=P; const tbody=document.querySelector('#tabla tbody'); tbody.innerHTML='';
+      const rows=[]
+      for(let mes=1; mes<=n; mes++){
+        const interes = restante*r; let amort = cuota - interes; if(amort>restante) amort=restante; restante -= amort;
+        rows.push({mes, cuota, interes, amort, restante: Math.max(restante,0)});
+        if(restante<=0) break;
+      }
+      const frag=document.createDocumentFragment();
+      for(const r of rows){
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${r.mes}</td><td>${r.cuota.toFixed(2)}</td><td>${r.interes.toFixed(2)}</td><td>${r.amort.toFixed(2)}</td><td>${r.restante.toFixed(2)}</td>`;
+        frag.appendChild(tr);
+      }
+      tbody.appendChild(frag);
+
+      const fmt=v=> new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(v||0);
+      document.getElementById('resultados').innerHTML = `<strong>Cuota mensual:</strong> ${fmt(cuota)} · <strong>Cuota + seguros:</strong> ${fmt(cuotaTotal)}`;
+    }
+
+    // Recalcular al teclear
+    ;[precioEl, ltvEl, anosEl, tinEl, seguroHogarEl, seguroVidaEl].forEach(el=> el.addEventListener('input', ()=>{ syncPrincipal(); calcular(); }));
+
+    // === Igualar alturas y subir un poco el límite inferior del recuadro de la tabla ===
+    (function syncHeights(){
+      const datos = document.getElementById('card-datos');
+      const mapa = document.getElementById('card-mapa');
+      const tabla = document.getElementById('card-tabla');
+      const wrap = document.querySelector('#card-tabla .table-wrap');
+      if(!datos || !mapa || !tabla || !wrap) return;
+      const GAP = 18; // coincide con el gap entre cards en la columna
+      const OFFSET = 24; // sube un poco el límite inferior del recuadro de la tabla
+      function apply(){
+        const hLeft = datos.offsetHeight + GAP + mapa.offsetHeight - OFFSET;
+        tabla.style.minHeight = hLeft + 'px';
+        const st = getComputedStyle(tabla);
+        const padV = (parseFloat(st.paddingTop)||0) + (parseFloat(st.paddingBottom)||0);
+        const title = tabla.querySelector('h2'); const hTitle = title? title.offsetHeight : 0;
+        const available = hLeft - padV - hTitle - 12;
+        wrap.style.maxHeight = Math.max(300, available) + 'px';
+      }
+      const ro = new ResizeObserver(apply); ro.observe(datos); ro.observe(mapa); ro.observe(tabla);
+      window.addEventListener('load', apply); window.addEventListener('resize', apply);
+      setTimeout(apply, 150);
+    })();
+
+    // Cálculo inicial
+    syncPrincipal();
+    calcular();
+  </script>
+</body>
+</html>
