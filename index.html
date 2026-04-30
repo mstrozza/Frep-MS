@@ -232,11 +232,142 @@
     .version { color: var(--muted); font-size:.82rem; font-weight:700; }
 
     .preview-window { width:100%; height:128px; border-radius:18px; background:linear-gradient(180deg,var(--surface-muted),var(--surface-soft)); border:1px solid var(--border); margin-bottom:18px; position:relative; overflow:hidden; }
-    .preview-window::before { content:""; position:absolute; inset:0 0 auto; height:34px; background:var(--surface-solid); border-bottom:1px solid var(--border); }
-    .preview-window::after { content:""; position:absolute; top:11px; left:14px; width:42px; height:10px; border-radius:999px; background:var(--border-strong); box-shadow:52px 0 0 var(--border),104px 0 0 var(--surface-soft); }
+    .preview-window::before { content:""; position:absolute; inset:0 0 auto; height:34px; background:var(--surface-solid); border-bottom:1px solid var(--border); z-index:2; }
+    .preview-window::after { content:""; position:absolute; top:11px; left:14px; width:42px; height:10px; border-radius:999px; background:var(--border-strong); box-shadow:52px 0 0 var(--border),104px 0 0 var(--surface-soft); z-index:2; }
+
+    .preview-iframe-wrapper {
+      position:absolute;
+      inset:34px 0 0 0;
+      overflow:hidden;
+      background:var(--surface-solid);
+      z-index:1;
+    }
+
+    .preview-iframe {
+      width:260%;
+      height:260%;
+      border:0;
+      transform:scale(.385);
+      transform-origin:top left;
+      pointer-events:none;
+      background:white;
+    }
+
+    body.dark .preview-iframe {
+      background:#0f172a;
+    }
+
+    .preview-fallback {
+      position:absolute;
+      inset:34px 0 0 0;
+      display:grid;
+      place-items:center;
+      padding:14px;
+      text-align:center;
+      color:var(--muted);
+      background:linear-gradient(180deg,var(--surface-muted),var(--surface-soft));
+      z-index:1;
+      font-size:.82rem;
+      font-weight:700;
+    }
+
+    .preview-fallback strong {
+      display:block;
+      color:var(--text);
+      font-size:.88rem;
+      margin-bottom:3px;
+    }
+
+    .preview-window.has-frame .preview-fallback {
+      display:none;
+    }
+
+    .external-preview {
+      position:absolute;
+      inset:34px 0 0 0;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:16px;
+      background:
+        radial-gradient(circle at top right, rgba(99,102,241,.10), transparent 42%),
+        linear-gradient(180deg,var(--surface-muted),var(--surface-soft));
+      z-index:1;
+    }
+
+    .external-preview-icon {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      background:var(--surface-solid);
+      border:1px solid var(--border);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+
+    .external-preview-icon img {
+      width:22px;
+      height:22px;
+      object-fit:contain;
+    }
+
+    .external-preview-text {
+      min-width:0;
+    }
+
+    .external-preview-text strong {
+      display:block;
+      font-size:.9rem;
+      color:var(--text);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .external-preview-text span {
+      display:block;
+      margin-top:2px;
+      font-size:.78rem;
+      color:var(--muted);
+      font-weight:700;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
     .preview-content { position:absolute; inset:48px 14px 14px; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .preview-box { border-radius:12px; background:var(--surface-solid); border:1px solid var(--border); }
     .preview-box.large { grid-column:span 2; }
+
+    .preview-dynamic { position:absolute; inset:48px 14px 14px; display:grid; gap:9px; }
+    .preview-dynamic.calculator { grid-template-columns:1fr 1fr; }
+    .preview-dynamic.docs { grid-template-columns:1fr; }
+    .preview-dynamic.config { grid-template-columns:1fr 1fr; }
+    .preview-dynamic.design { grid-template-columns:.8fr 1.2fr; }
+    .preview-dynamic.compare { grid-template-columns:1fr 1fr; }
+    .preview-dynamic.lab { grid-template-columns:repeat(3,1fr); }
+    .preview-line, .preview-tile, .preview-pill, .preview-sidebar, .preview-main, .preview-mini-card {
+      border:1px solid var(--border);
+      background:var(--surface-solid);
+      border-radius:12px;
+    }
+    .preview-line { min-height:13px; border-radius:999px; }
+    .preview-line.short { width:58%; }
+    .preview-line.medium { width:78%; }
+    .preview-tile { min-height:32px; }
+    .preview-tile.tall { min-height:66px; }
+    .preview-pill { min-height:26px; border-radius:999px; }
+    .preview-sidebar { min-height:66px; }
+    .preview-main { min-height:66px; display:grid; gap:8px; padding:9px; }
+    .preview-mini-card { min-height:24px; }
+    .preview-wide { grid-column:1 / -1; }
+    .preview-dot-row { display:flex; gap:7px; align-items:center; }
+    .preview-dot { width:22px; height:22px; border-radius:50%; background:var(--surface-solid); border:1px solid var(--border); }
+    .preview-bar-stack { display:grid; gap:7px; align-content:center; }
+    .preview-bar { height:10px; border-radius:999px; background:var(--surface-solid); border:1px solid var(--border); }
+    .preview-bar:nth-child(2) { width:78%; }
+    .preview-bar:nth-child(3) { width:54%; }
 
     .app-icon { width:44px; height:44px; border-radius:14px; display:grid; place-items:center; background:var(--surface-soft); color:var(--primary); font-size:1.24rem; margin-bottom:14px; }
     .app-card h3 { margin:0 0 8px; font-size:1.18rem; letter-spacing:-.035em; }
@@ -816,13 +947,46 @@
       return apps.filter((app) => app.featured).slice(0, 2);
     }
 
-    function preview() {
+    function preview(app = {}) {
+      const safeUrl = resolvePreviewUrl(app.url || '#');
+      const isExternal = /^https?:\/\//i.test(app.url || '') && !safeUrl.startsWith(window.location.origin);
+      const host = getUrlHost(safeUrl);
+      const faviconUrl = host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : '';
+
+      if (isExternal) {
+        return `
+          <div class="preview-window">
+            <div class="external-preview">
+              <div class="external-preview-icon">
+                ${faviconUrl ? `<img src="${escapeAttr(faviconUrl)}" alt="" loading="lazy">` : '🌐'}
+              </div>
+              <div class="external-preview-text">
+                <strong>${escapeHtml(host || app.title || 'Web externa')}</strong>
+                <span>Vista embebida bloqueada por la web</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
       return `
         <div class="preview-window">
-          <div class="preview-content">
-            <div class="preview-box"></div>
-            <div class="preview-box"></div>
-            <div class="preview-box large"></div>
+          <div class="preview-fallback">
+            <div>
+              <strong>Vista previa no disponible</strong>
+              <span>${escapeHtml(safeUrl)}</span>
+            </div>
+          </div>
+          <div class="preview-iframe-wrapper">
+            <iframe
+              class="preview-iframe"
+              src="${escapeAttr(safeUrl)}"
+              loading="lazy"
+              tabindex="-1"
+              aria-hidden="true"
+              onload="this.closest('.preview-window')?.classList.add('has-frame')"
+              onerror="this.closest('.preview-window')?.classList.remove('has-frame')">
+            </iframe>
           </div>
         </div>
       `;
@@ -989,7 +1153,7 @@
               <span class="tag ${app.tag || getTagFromStatus(app.status)}">${escapeHtml(app.status)}</span>
               <span class="version">${escapeHtml(app.version || 'v1.0')}</span>
             </div>
-            ${preview()}
+            ${preview(app)}
             <div class="app-icon">${escapeHtml(app.icon || '▦')}</div>
             <h3>${escapeHtml(app.title)}</h3>
             <p>${escapeHtml(app.description || 'Sin descripción todavía.')}</p>
@@ -1189,6 +1353,24 @@
 
     function escapeAttr(value = '') {
       return escapeHtml(value);
+    }
+
+    function resolvePreviewUrl(url = '') {
+      if (!url || url === '#') return '#';
+      if (/^https?:\/\//i.test(url)) return url;
+      try {
+        return new URL(url, window.location.href).href;
+      } catch (error) {
+        return url;
+      }
+    }
+
+    function getUrlHost(url = '') {
+      try {
+        return new URL(url, window.location.href).hostname.replace(/^www\./, '');
+      } catch (error) {
+        return '';
+      }
     }
 
     filters.addEventListener('click', (event) => {
