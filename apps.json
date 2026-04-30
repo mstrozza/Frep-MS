@@ -1,0 +1,38 @@
+[
+  {
+    "title": "Calculadora 3D",
+    "id": "calculadora-3d",
+    "icon": "🧮",
+    "category": "Calculadora",
+    "status": "Activa",
+    "tag": "live",
+    "version": "v1.0",
+    "url": "./apps/calculadora-3d/",
+    "description": "Calcula coste de material, máquina, electricidad, margen y precio final para piezas impresas en 3D.",
+    "featured": true
+  },
+  {
+    "title": "Simulador hipoteca",
+    "id": "simulador-hipoteca",
+    "icon": "📄",
+    "category": "Calculadora",
+    "status": "Activa",
+    "tag": "live",
+    "version": "v1.0",
+    "url": "./apps/mi-hipoteca/",
+    "description": "Realiza la simulación de tu hipoteca, con cuadro de amortización incluido.",
+    "featured": true
+  },
+  {
+    "title": "Comparador de coches",
+    "id": "comparador-coches",
+    "icon": "🚗",
+    "category": "Utilidades",
+    "status": "Idea",
+    "tag": "idea",
+    "version": "v0.1",
+    "url": "./apps/comparador-coches/",
+    "description": "Guarda modelos, precios, kilómetros, garantía y valoración final para comparar opciones.",
+    "featured": false
+  }
+]
