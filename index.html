@@ -741,6 +741,144 @@
       }
     }
 
+
+    /* Roadmap: icono fijo + texto recortable */
+    .mini-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .roadmap-item-icon {
+      flex: 0 0 auto;
+      width: 22px;
+      min-width: 22px;
+      display: inline-grid;
+      place-items: center;
+      line-height: 1;
+    }
+
+    .roadmap-item-text {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .roadmap-status-select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface-solid);
+      color: var(--text);
+    }
+
+    .roadmap-status-select select {
+      border: 0;
+      padding: 0;
+      min-height: auto;
+      background: transparent;
+      color: var(--text);
+      outline: none;
+    }
+
+    .roadmap-status-icon {
+      width: 22px;
+      min-width: 22px;
+      display: inline-grid;
+      place-items: center;
+      line-height: 1;
+    }
+
+    @media (max-width: 860px) {
+      .roadmap-status-select {
+        width: 100%;
+      }
+
+      .roadmap-status-select select {
+        width: 100%;
+      }
+    }
+
+
+    /* Preview simulada para URLs externas */
+    .simulated-preview {
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .simulated-browser-bar {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-solid);
+    }
+
+    .simulated-browser-bar span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border-strong);
+      flex: 0 0 auto;
+    }
+
+    .simulated-browser-bar strong {
+      margin-left: 6px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 750;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .simulated-preview-body {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px 10px;
+      min-width: 0;
+    }
+
+    .simulated-favicon {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .simulated-preview-lines {
+      display: grid;
+      gap: 7px;
+      padding: 0 14px 14px 70px;
+    }
+
+    .simulated-preview-lines i {
+      display: block;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+    }
+
+    .simulated-preview-lines i:nth-child(1) { width: 86%; }
+    .simulated-preview-lines i:nth-child(2) { width: 68%; }
+    .simulated-preview-lines i:nth-child(3) { width: 44%; }
+
+    body.dark .simulated-browser-bar {
+      background: rgba(15, 23, 42, .9);
+    }
+
   </style>
 </head>
 <body>
@@ -1204,13 +1342,22 @@
       const faviconUrl = host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : '';
 
       const previewContent = isExternal ? `
-        <div class="external-preview">
-          <div class="external-preview-icon">
-            ${faviconUrl ? `<img src="${escapeAttr(faviconUrl)}" alt="" loading="lazy">` : '🌐'}
+        <div class="external-preview simulated-preview">
+          <div class="simulated-browser-bar">
+            <span></span><span></span><span></span>
+            <strong>${escapeHtml(host || 'web externa')}</strong>
           </div>
-          <div class="external-preview-text">
-            <strong>${escapeHtml(host || app.title || 'Web externa')}</strong>
-            <span>Vista embebida bloqueada por la web</span>
+          <div class="simulated-preview-body">
+            <div class="external-preview-icon simulated-favicon">
+              ${faviconUrl ? `<img src="${escapeAttr(faviconUrl)}" alt="" loading="lazy">` : '🌐'}
+            </div>
+            <div class="external-preview-text">
+              <strong>${escapeHtml(app.title || host || 'Web externa')}</strong>
+              <span>${escapeHtml(host || safeUrl)}</span>
+            </div>
+          </div>
+          <div class="simulated-preview-lines" aria-hidden="true">
+            <i></i><i></i><i></i>
           </div>
         </div>
       ` : `
@@ -1313,7 +1460,7 @@
       roadmapList.innerHTML = roadmapItems.map((item, index) => `
         <div class="mini-item">
           <div class="mini-item-left">
-            <span>${getRoadmapEmoji(item.status)}</span>
+            <span class="roadmap-item-icon" aria-hidden="true">${getRoadmapEmoji(item.status)}</span>
             <span class="roadmap-item-text">${escapeHtml(item.text)}</span>
           </div>
           <div class="roadmap-item-actions">
@@ -1446,6 +1593,19 @@
         adminNotice?.classList.remove('show');
       });
     });
+
+
+
+    const roadmapStatusSelect = document.getElementById('roadmapStatus');
+    const roadmapStatusIcon = document.getElementById('roadmapStatusIcon');
+
+    function updateRoadmapStatusIcon() {
+      if (!roadmapStatusSelect || !roadmapStatusIcon) return;
+      roadmapStatusIcon.textContent = getRoadmapEmoji(roadmapStatusSelect.value);
+    }
+
+    roadmapStatusSelect?.addEventListener('change', updateRoadmapStatusIcon);
+    updateRoadmapStatusIcon();
 
 
     renderApps();
