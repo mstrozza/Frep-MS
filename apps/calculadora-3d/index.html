@@ -63,7 +63,8 @@
       position: relative;
       min-height: 100vh;
       padding: 32px 16px;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: visible;
     }
 
     .bg-layer {
@@ -140,15 +141,17 @@
       align-items:center;
       justify-content:flex-end;
       gap:12px;
-      flex:0 0 auto;
-      flex-wrap:nowrap;
+      flex:0 1 auto;
+      flex-wrap:wrap;
+      max-width:100%;
+      min-width:0;
       padding:12px 16px;
       border-radius:18px;
       border:1px solid var(--border);
       background: color-mix(in srgb, var(--panel) 96%, transparent);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      white-space:nowrap;
+      white-space:normal;
       box-shadow: 0 0 24px rgba(97,99,244,.10);
       transition: border-color .25s ease, background .25s ease;
     }
@@ -192,7 +195,7 @@
     #exportPdfBtn.exporting { border-color: rgba(239,68,68,.75); box-shadow: 0 0 14px rgba(239,68,68,.22); }
 
 
-    .toggle-wrap { display:flex; align-items:center; gap:10px; color: var(--text-soft); font-size: .95rem; }
+    .toggle-wrap { display:flex; align-items:center; justify-content:center; gap:10px; color: var(--text-soft); font-size: .95rem; flex:0 0 auto; }
     .icon-mini { width:16px; height:16px; opacity:.9; }
 
     .switch {
@@ -209,8 +212,8 @@
 
     .btn {
       border:1px solid rgba(162,162,211,.35); background: var(--button-bg); color: var(--text);
-      border-radius:14px; height:42px; padding:0 14px; display:inline-flex; align-items:center; gap:8px;
-      cursor:pointer; transition:.2s ease; font-weight:600;
+      border-radius:14px; min-height:42px; height:auto; padding:10px 14px; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      cursor:pointer; transition:.2s ease; font-weight:600; min-width:0; text-align:center; line-height:1.15;
     }
     .btn:hover { background: var(--button-hover); border-color: var(--accent); transform: translateY(-1px); }
     .btn:active { transform: translateY(0) scale(.98); }
@@ -438,6 +441,60 @@
       .span-2 { grid-column: auto; }
       .card-header { padding:20px 20px 8px; }
       .card-content { padding:0 20px 20px; }
+    }
+
+    @media (max-width: 640px) {
+      .page { padding: 18px 10px; }
+      .topbar {
+        gap:16px;
+        padding:14px;
+        border-radius:22px;
+      }
+      .header-left {
+        min-width:0;
+        flex-basis:100%;
+      }
+      h1 { font-size: clamp(1.55rem, 8vw, 2rem); }
+      .subtitle { font-size:.9rem; }
+      .toolbar {
+        width:100%;
+        justify-content:stretch;
+        gap:10px;
+        padding:10px;
+        border-radius:18px;
+      }
+      .toggle-wrap {
+        flex:1 1 100%;
+        min-height:42px;
+        padding:6px 8px;
+        border-radius:14px;
+        background:rgba(162,162,211,.08);
+      }
+      .toolbar .btn,
+      #copyBudgetBtn,
+      #exportPdfBtn,
+      #resetBtn {
+        flex:1 1 calc(50% - 10px);
+        min-width:0;
+        width:auto;
+        white-space:normal;
+      }
+      #copyBudgetBtn {
+        flex-basis:100%;
+      }
+      .card { border-radius:22px; }
+      .summary-head { align-items:flex-start; }
+      .legend-row { grid-template-columns:auto 1fr; row-gap:4px; }
+      .legend-value, .legend-percent { grid-column:2; justify-self:start; }
+    }
+
+    @media (max-width: 380px) {
+      .toolbar .btn,
+      #copyBudgetBtn,
+      #exportPdfBtn,
+      #resetBtn {
+        flex-basis:100%;
+      }
     }
   </style>
 </head>

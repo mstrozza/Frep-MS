@@ -322,7 +322,12 @@
     .admin-icon-btn.add-mode { width: auto; min-width: 92px; padding: 0 14px; background: #ecfdf3; color: #15803d; border-color: rgba(21, 128, 61, .28); font-weight: 800; }
     .admin-icon-btn.add-mode:hover { background: #dcfce7; border-color: rgba(21, 128, 61, .42); }
     .apps-admin-list { display: grid; gap: 10px; overflow-y: auto; overflow-x: hidden; padding-right: 4px; min-height: 0; }
-    .admin-item { border: 1px solid var(--border); border-radius: 16px; padding: 14px; background: var(--surface-solid); cursor: grab; transition: transform .16s ease, border-color .16s ease, opacity .16s ease; }
+    .admin-item { position: relative; border: 1px solid var(--border); border-radius: 16px; padding: 14px; background: var(--surface-solid); cursor: grab; transition: transform .16s ease, border-color .16s ease, opacity .16s ease; }
+    .admin-item-main { padding-right: 86px; }
+    .admin-reorder-actions { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; align-items: center; }
+    .admin-reorder-btn { width: 34px; height: 34px; border-radius: 11px; border: 1px solid var(--border); background: var(--surface-soft); color: var(--text); display: grid; place-items: center; font-weight: 900; line-height: 1; transition: transform .16s ease, border-color .16s ease, background .16s ease, opacity .16s ease; }
+    .admin-reorder-btn:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--border-strong); background: var(--surface-solid); }
+    .admin-reorder-btn:disabled { opacity: .35; cursor: not-allowed; }
     .admin-item.dragging { opacity: .55; transform: scale(.98); border-color: var(--border-strong); }
     .admin-item.featured-admin { border-color: var(--border); box-shadow: none; }
     .admin-item.editing-admin { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, .12); }
@@ -343,6 +348,12 @@
     .featured-toggle:has(input:checked) { border-color: #f59e0b; background: #fffbeb; box-shadow: 0 0 0 3px rgba(245, 158, 11, .12); }
     body.dark .featured-toggle:has(input:checked) { background: rgba(245, 158, 11, .12); }
 
+    .split-section { width: 100%; align-items: stretch; }
+    .split-section > .card { min-width: 0; }
+    .split-section .panel { width: 100%; }
+    .split-section .lead { max-width: 100%; }
+    .roadmap-head, .os-header { min-width: 0; }
+
     footer { margin:38px 0 8px; color:var(--muted); font-size:.92rem; text-align:center; }
 
     @media (max-width: 980px) {
@@ -359,6 +370,9 @@
       #appForm.admin-box { position: relative; top: auto; max-height: none; overflow: visible; }
       .admin-list-box { height:auto; }
       .apps-admin-list { max-height: 420px; }
+      .admin-item-main { padding-right: 82px; }
+      .admin-reorder-actions { top: 10px; right: 10px; }
+      .admin-reorder-btn { width: 32px; height: 32px; }
       .edit-box-head { top: auto; }
       .edit-subbar { flex-direction: column; align-items: flex-start; }
       .admin-toolbar { justify-content: flex-start; }
@@ -370,6 +384,8 @@
     @media (max-width: 640px) {
       .page { padding:16px; }
       .topbar { top:10px; border-radius:20px; }
+      .panel { padding: 22px; }
+      .split-section { gap: 16px; }
       .apps-grid, .hero-metrics { grid-template-columns:1fr; }
       h1 { font-size:3rem; }
       .hero-main { min-height:auto; }
@@ -665,6 +681,9 @@
 
     const STORAGE_KEY = 'craftlab_apps';
     const ROADMAP_STORAGE_KEY = 'craftlab_roadmap';
+    const THEME_STORAGE_KEY = 'craftlab_theme';
+    const ADMIN_SESSION_KEY = 'craftlab_admin_unlocked';
+    const ADMIN_PASSWORD = 'craftlab'; // Cambia esta contraseña por la que quieras usar.
     const safeClone = (value) => JSON.parse(JSON.stringify(value));
 
     let apps = loadApps();
@@ -699,6 +718,38 @@
     const adminNotice = document.getElementById('adminNotice');
     const roadmapList = document.getElementById('roadmapList');
     const saveRoadmapBtn = document.getElementById('saveRoadmapBtn');
+
+    function applySavedTheme() {
+      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const shouldUseDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+      document.body.classList.toggle('dark', shouldUseDark);
+      const themeButton = document.getElementById('themeToggle');
+      if (themeButton) themeButton.textContent = shouldUseDark ? '☀' : '☾';
+    }
+
+    function setTheme(isDark) {
+      document.body.classList.toggle('dark', isDark);
+      localStorage.setItem(THEME_STORAGE_KEY, isDark ? 'dark' : 'light');
+      const themeButton = document.getElementById('themeToggle');
+      if (themeButton) themeButton.textContent = isDark ? '☀' : '☾';
+    }
+
+    function isAdminUnlocked() {
+      return sessionStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+    }
+
+    function requestAdminAccess() {
+      if (isAdminUnlocked()) return true;
+      const password = prompt('Introduce la contraseña para gestionar aplicaciones');
+      if (password === null) return false;
+      if (password === ADMIN_PASSWORD) {
+        sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
+        return true;
+      }
+      alert('Contraseña incorrecta. No se ha abierto el panel de gestión.');
+      return false;
+    }
 
     function loadApps() {
       try {
@@ -955,12 +1006,18 @@
       normalizeFeatured(apps);
       appsAdminList.innerHTML = apps.map((app, index) => `
         <div class="admin-item ${app.featured ? 'featured-admin' : ''} ${selectedAdminIndex === index ? 'editing-admin' : ''}" draggable="true" data-drag-index="${index}">
-          <strong>${selectedAdminIndex === index ? '✏️ ' : ''}${app.featured ? '📌 ' : ''}${escapeHtml(app.icon || '▦')} ${escapeHtml(app.title)}</strong>
-          <span>${escapeHtml(app.category)} · ${escapeHtml(app.status)} · ${escapeHtml(app.version || 'sin versión')}</span>
-          <div class="item-actions">
-            <button class="admin-btn" type="button" data-edit="${index}">Editar</button>
-            <button class="admin-btn" type="button" data-duplicate="${index}">Duplicar</button>
-            <button class="admin-btn danger" type="button" data-delete="${index}">Eliminar</button>
+          <div class="admin-item-main">
+            <strong>${selectedAdminIndex === index ? '✏️ ' : ''}${app.featured ? '📌 ' : ''}${escapeHtml(app.icon || '▦')} ${escapeHtml(app.title)}</strong>
+            <span>${escapeHtml(app.category)} · ${escapeHtml(app.status)} · ${escapeHtml(app.version || 'sin versión')}</span>
+            <div class="item-actions">
+              <button class="admin-btn" type="button" data-edit="${index}">Editar</button>
+              <button class="admin-btn" type="button" data-duplicate="${index}">Duplicar</button>
+              <button class="admin-btn danger" type="button" data-delete="${index}">Eliminar</button>
+            </div>
+          </div>
+          <div class="admin-reorder-actions" aria-label="Reordenar aplicación">
+            <button class="admin-reorder-btn" type="button" data-move-up="${index}" title="Subir posición" aria-label="Subir ${escapeAttr(app.title)}" ${index === 0 ? 'disabled' : ''}>↑</button>
+            <button class="admin-reorder-btn" type="button" data-move-down="${index}" title="Bajar posición" aria-label="Bajar ${escapeAttr(app.title)}" ${index === apps.length - 1 ? 'disabled' : ''}>↓</button>
           </div>
         </div>
       `).join('');
@@ -1143,12 +1200,20 @@
 
     searchInput.addEventListener('input', renderApps);
 
+    
     manageAppsBtn.addEventListener('click', () => {
+      const password = prompt('Introduce la contraseña de administrador');
+      if (password !== ADMIN_PASSWORD) {
+        alert('Contraseña incorrecta');
+        return;
+      }
+
       document.body.classList.add('modal-open');
       adminModal.classList.add('open');
       resetForm(false);
       requestAnimationFrame(renderAdminList);
     });
+
 
     closeAdminBtn.addEventListener('click', closeAdmin);
 
@@ -1258,6 +1323,28 @@
       const editIndex = event.target.dataset.edit;
       const duplicateIndex = event.target.dataset.duplicate;
       const deleteIndex = event.target.dataset.delete;
+      const moveUpIndex = event.target.dataset.moveUp;
+      const moveDownIndex = event.target.dataset.moveDown;
+
+      if (moveUpIndex !== undefined) {
+        const index = Number(moveUpIndex);
+        if (index > 0) {
+          [apps[index - 1], apps[index]] = [apps[index], apps[index - 1]];
+          selectedAdminIndex = selectedAdminIndex === index ? index - 1 : selectedAdminIndex === index - 1 ? index : selectedAdminIndex;
+          persistAndRefresh();
+        }
+        return;
+      }
+
+      if (moveDownIndex !== undefined) {
+        const index = Number(moveDownIndex);
+        if (index < apps.length - 1) {
+          [apps[index], apps[index + 1]] = [apps[index + 1], apps[index]];
+          selectedAdminIndex = selectedAdminIndex === index ? index + 1 : selectedAdminIndex === index + 1 ? index : selectedAdminIndex;
+          persistAndRefresh();
+        }
+        return;
+      }
 
       if (editIndex !== undefined) {
         fillForm(apps[Number(editIndex)], Number(editIndex));
@@ -1324,8 +1411,7 @@
     });
 
     document.getElementById('themeToggle').addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      document.getElementById('themeToggle').textContent = document.body.classList.contains('dark') ? '☀' : '☾';
+      setTheme(!document.body.classList.contains('dark'));
     });
 
     function runCraftLabTests() {
@@ -1342,6 +1428,7 @@
       console.assert(slugify('Mi App Ñ') === 'mi-app-n', 'slugify debe normalizar texto con acentos y ñ');
     }
 
+    applySavedTheme();
     normalizeFeatured(apps);
     saveApps();
     renderApps();
