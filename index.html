@@ -848,6 +848,39 @@
       scrollbar-color: var(--border-strong) var(--surface-soft);
     }
 
+    /* Scroll visible permanente: además del scrollbar nativo, se dibuja una guía lateral fija.
+       En iOS/Safari los scrollbars nativos pueden ocultarse por sistema, por eso añadimos esta guía visual. */
+    .apps-scroll,
+    #roadmapList {
+      position: relative;
+      background-image:
+        linear-gradient(var(--surface-soft), var(--surface-soft)),
+        linear-gradient(var(--border-strong), var(--border-strong));
+      background-repeat: no-repeat, no-repeat;
+      background-position: right 0 top 0, right 3px top 12px;
+      background-size: 10px 100%, 4px 42px;
+      border-radius: 18px;
+    }
+
+    .apps-scroll { min-height: min(100%, 332px); }
+    #roadmapList { min-height: 222px; }
+
+    .icon-choice {
+      min-height: 42px;
+      border-radius: 12px;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .icon-choice:hover {
+      transform: translateY(-1px);
+    }
+
+    .icon-choice .svg-icon {
+      width: 22px;
+      height: 22px;
+    }
+
+
     @keyframes craftCardIn {
       from { opacity: 0; transform: translateY(14px) scale(.985); filter: blur(3px); }
       to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -1206,9 +1239,68 @@
       app: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>',
       calculator: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>',
       document: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7Z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',
+      puzzle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v4a2 2 0 1 0 0 4v3h-4a2 2 0 1 1-4 0H3V8h4a2 2 0 1 0 2-3Z"/><path d="M15 11h6v10h-8v-4"/></svg>',
+      home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg>',
+      car: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13 7 7h10l2 6"/><path d="M4 13h16v5H4Z"/><circle cx="7" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/></svg>',
+      lab: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5l-4 8a4 4 0 0 0 3.6 5h6.8A4 4 0 0 0 19 16l-4-8V3"/><path d="M8 3h8M7 15h10"/></svg>',
+      box: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8 12 4l8 4-8 4Z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg>',
+      palette: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18h1.5a2 2 0 0 0 1-3.75 1.7 1.7 0 0 1 .8-3.25H17a4 4 0 0 0 0-8.6A9 9 0 0 0 12 3Z"/><circle cx="7.5" cy="11" r=".7"/><circle cx="10" cy="7.5" r=".7"/><circle cx="14" cy="7.5" r=".7"/></svg>',
       tool: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0 5 5L11 20l-4-4 8.7-9.7Z"/><path d="M7 16l-3 3 1 1 3-3"/></svg>',
       chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-8"/></svg>',
-      globe: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>'
+      note: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16H6Z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
+      rocket: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4c3 0 5-1 6-1 0 1-1 3-1 6l-7 7-4-4Z"/><path d="M9 15l-4 1 1-4M14 4l6 6M7 17l-3 3M12 19l-1 3 4-4"/></svg>',
+      folder: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h7l2 2h9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>',
+      computer: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M9 21h6M12 16v5"/></svg>',
+      brain: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5a3 3 0 0 0-5 2.2A3.2 3.2 0 0 0 5 13a3 3 0 0 0 4 4v-12ZM15 5a3 3 0 0 1 5 2.2A3.2 3.2 0 0 1 19 13a3 3 0 0 1-4 4v-12Z"/><path d="M9 9h6M9 14h6"/></svg>',
+      ruler: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17 17 4l3 3L7 20Z"/><path d="M8 16l-2-2M11 13l-2-2M14 10l-2-2M17 7l-2-2"/></svg>',
+      printer: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V4h10v4M7 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7Z"/></svg>',
+      cube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v10l8 4 8-4V7Z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>',
+      phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg>',
+      keyboard: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M19 10h.01M7 14h10"/></svg>',
+      mouse: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="5"/><path d="M12 3v6"/></svg>',
+      magnet: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11V5h5v6a2 2 0 0 0 4 0V5h5v6a7 7 0 0 1-14 0Z"/><path d="M5 8h5M14 8h5"/></svg>',
+      bolt: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-8 12h7l-1 8 8-12h-7Z"/></svg>',
+      leaf: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10 4 5 9 5 19c10 0 15-5 15-15Z"/><path d="M5 19c4-6 8-9 15-15"/></svg>',
+      globe: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+      map: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18 3 21V6l6-3 6 3 6-3v15l-6 3Z"/><path d="M9 3v15M15 6v15"/></svg>',
+      pinmap: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.4 7-12A7 7 0 0 0 5 9c0 6.6 7 12 7 12Z"/><circle cx="12" cy="9" r="2"/></svg>',
+      compass: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 5-5 2 2-5Z"/></svg>',
+      clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+      calendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>',
+      euro: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6a7 7 0 1 0 0 12"/><path d="M4 10h10M4 14h10"/></svg>',
+      receipt: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
+      bank: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16M6 10v8M10 10v8M14 10v8M18 10v8M3 20h18M12 4l8 4H4Z"/></svg>',
+      bell: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 7 3 6 3 8H3c0-2 3-1 3-8Z"/><path d="M10 21h4"/></svg>',
+      upload: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>',
+      download: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg>',
+      lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+      key: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="14" r="4"/><path d="M11 14h10M17 14v3M14 14v2"/></svg>',
+      shield: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6Z"/><path d="m9 12 2 2 4-5"/></svg>',
+      link: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>',
+      magic: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 10-10M12 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1ZM19 13l.7 2.3L22 16l-2.3.7L19 19l-.7-2.3L16 16l2.3-.7Z"/></svg>',
+      target: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
+      dna: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3c8 4 8 14 0 18M17 3c-8 4-8 14 0 18M8 7h8M7 12h10M8 17h8"/></svg>',
+      building: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4h14v17"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M9 16h.01M15 16h.01M3 21h18"/></svg>',
+      chair: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 13V5a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v8"/><path d="M5 13h14v4H5ZM7 17v4M17 17v4"/></svg>',
+      door: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 21V3h10v18"/><path d="M10 12h.01M5 21h14"/></svg>',
+      bath: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16v4a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4Z"/><path d="M7 12V6a3 3 0 0 1 6 0"/></svg>',
+      cart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2 12h10l3-8H7"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>',
+      brush: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4 20 10 10 20H4v-6Z"/><path d="M13 5l6 6M4 20l6-6"/></svg>',
+      sliders: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="11" cy="17" r="2"/></svg>',
+      headphones: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14a8 8 0 0 1 16 0"/><path d="M4 14v4a2 2 0 0 0 2 2h2v-6H4ZM20 14v4a2 2 0 0 1-2 2h-2v-6h4Z"/></svg>',
+      gamepad: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10h10a5 5 0 0 1 4 8l-1 1a2 2 0 0 1-3-.5L15 16H9l-2 2.5a2 2 0 0 1-3 .5l-1-1a5 5 0 0 1 4-8Z"/><path d="M8 14h.01M11 14h.01M17 13h.01M19 15h.01"/></svg>',
+      bike: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M8 17l4-8 3 8M12 9h3M10 7h3"/></svg>',
+      plane: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 16 22 3l-6 18-4-8-10 3Z"/><path d="M22 3 12 13"/></svg>',
+      truck: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v10H3Z"/><path d="M14 11h4l3 3v3h-7Z"/><circle cx="7" cy="19" r="2"/><circle cx="17" cy="19" r="2"/></svg>',
+      robot: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="7" width="14" height="12" rx="3"/><path d="M12 7V3M8 12h.01M16 12h.01M9 16h6"/><path d="M3 13h2M19 13h2"/></svg>',
+      sparkle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2Z"/><path d="M19 3l.8 2.2L22 6l-2.2.8L19 9l-.8-2.2L16 6l2.2-.8Z"/></svg>',
+      flame: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-4-3-6-5-9-.3 2-1.2 3.4-3 5-.7-1-1-2.4-1-4-3 2.4-5 5-5 8a7 7 0 0 0 7 7Z"/></svg>',
+      snow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M4 6l16 12M20 6 4 18M8 4l4 4 4-4M8 20l4-4 4 4"/></svg>',
+      speaker: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9Z"/><path d="M16 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/></svg>'
+    };
+
+    const emojiIconMap = {
+      '🧮':'calculator','📄':'document','🧩':'puzzle','🏠':'home','🚗':'car','🧪':'lab','💡':'idea','📦':'box','🎨':'palette','🛠️':'tool','🛠':'tool','⚙️':'settings','⚙':'settings','📊':'chart','📝':'note','🔎':'search','🚀':'rocket','⭐':'sparkle','📌':'pin','🗂️':'folder','💻':'computer','🧠':'brain','🔧':'tool','📐':'ruler','🖨️':'printer','🧱':'cube','📱':'phone','🖥️':'computer','⌨️':'keyboard','🖱️':'mouse','🧰':'box','🔬':'lab','🧲':'magnet','🪛':'tool','🔩':'settings','⚡':'bolt','🔥':'flame','❄️':'snow','🌱':'leaf','🌍':'globe','🗺️':'map','📍':'pinmap','🧭':'compass','⏱️':'clock','⏰':'clock','📅':'calendar','📆':'calendar','🗓️':'calendar','📈':'chart','📉':'chart','💶':'euro','💰':'euro','🧾':'receipt','🏦':'bank','📋':'note','✅':'check','☑️':'check','🔔':'bell','📣':'speaker','📤':'upload','📥':'download','📁':'folder','📂':'folder','🗃️':'folder','🔐':'lock','🔑':'key','🛡️':'shield','🌐':'globe','🔗':'link','🧵':'link','🪄':'magic','🎯':'target','🧬':'dna','🧿':'sparkle','🏗️':'building','🏡':'home','🪑':'chair','🚪':'door','🛁':'bath','🚿':'bath','🍽️':'home','🛒':'cart','📏':'ruler','✏️':'edit','🖌️':'brush','🖼️':'palette','🎛️':'sliders','🎚️':'sliders','🎧':'headphones','🎮':'gamepad','🕹️':'gamepad','🚲':'bike','🚙':'car','✈️':'plane','🚚':'truck','📡':'globe','🤖':'robot','✨':'sparkle'
     };
 
     function getSvgIcon(name = 'app') {
@@ -1216,12 +1308,18 @@
     }
 
     function iconNameFromApp(app = {}) {
+      const rawIcon = String(app.icon || '').trim();
+      if (emojiIconMap[rawIcon]) return emojiIconMap[rawIcon];
       const text = `${app.icon || ''} ${app.category || ''} ${app.title || ''}`.toLowerCase();
-      if (text.includes('🧮') || text.includes('calcul')) return 'calculator';
-      if (text.includes('📄') || text.includes('📝') || text.includes('doc') || text.includes('pdf')) return 'document';
-      if (text.includes('📊') || text.includes('presupuesto') || text.includes('analytics')) return 'chart';
-      if (text.includes('🌐') || text.includes('web')) return 'globe';
-      if (text.includes('🛠') || text.includes('⚙') || text.includes('config') || text.includes('tool')) return 'tool';
+      if (text.includes('calcul') || text.includes('presupuesto')) return 'calculator';
+      if (text.includes('pdf') || text.includes('doc') || text.includes('texto') || text.includes('nota')) return 'document';
+      if (text.includes('3d') || text.includes('impres') || text.includes('printer')) return 'printer';
+      if (text.includes('diseño') || text.includes('design') || text.includes('logo')) return 'palette';
+      if (text.includes('coche') || text.includes('auto') || text.includes('veh')) return 'car';
+      if (text.includes('casa') || text.includes('hogar') || text.includes('mueble')) return 'home';
+      if (text.includes('web') || text.includes('url') || text.includes('link')) return 'globe';
+      if (text.includes('chart') || text.includes('analytics') || text.includes('datos')) return 'chart';
+      if (text.includes('config') || text.includes('tool') || text.includes('herramient')) return 'tool';
       return 'app';
     }
 
@@ -1931,7 +2029,7 @@
       resetForm(true, false);
     });
 
-    iconGrid.innerHTML = iconChoices.map((icon) => `<button class="icon-choice" type="button" data-icon="${icon}">${iconSvg(iconNameFromApp({ icon }))}</button>`).join('');
+    iconGrid.innerHTML = iconChoices.map((icon) => `<button class="icon-choice" type="button" data-icon="${escapeAttr(icon)}" title="${escapeAttr(icon)}" aria-label="Seleccionar icono ${escapeAttr(icon)}">${iconSvg(iconNameFromApp({ icon }))}</button>`).join('');
 
     openIconPickerBtn.addEventListener('click', (event) => {
       event.stopPropagation();
