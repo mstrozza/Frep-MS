@@ -93,7 +93,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      margin-bottom: 18px;
+      margin-bottom: 36px;
       padding: 14px 16px;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -137,9 +137,6 @@
     }
 
     .icon-mini { width:16px; height:16px; opacity:.9; }
-    .svg-icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; line-height:1; }
-    .svg-icon svg { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
-    .brand-mark { font-weight:850; }
 
     .switch {
       position:relative;
@@ -206,7 +203,7 @@
       grid-template-columns: minmax(0, 1.12fr) minmax(330px, .88fr);
       gap: 22px;
       align-items: stretch;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     .card {
@@ -372,6 +369,24 @@
       z-index:1;
     }
 
+    .external-preview-icon {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      background:var(--surface-solid);
+      border:1px solid var(--border);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+
+    .external-preview-icon img {
+      width:22px;
+      height:22px;
+      object-fit:contain;
+    }
+
     .external-preview-text {
       min-width:0;
     }
@@ -427,6 +442,7 @@
     .preview-bar { height:10px; border-radius:999px; background:var(--surface-solid); border:1px solid var(--border); }
     .preview-bar:nth-child(2) { width:78%; }
     .preview-bar:nth-child(3) { width:54%; }
+
     .app-card h3 { margin:0 0 8px; font-size:1.18rem; letter-spacing:-.035em; }
     .app-card p { color:var(--muted); margin:0; font-size:.95rem; }
     .card-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:18px; }
@@ -468,7 +484,7 @@
     .mini-item-left { display:flex; align-items:center; gap:10px; min-width:0; }
     .mini-item-left span { color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .roadmap-item-actions { display:flex; align-items:center; gap:8px; flex-shrink:0; }
-    .roadmap-action-btn { min-width:58px; height:32px; padding:0 10px; border-radius:10px; border:1px solid var(--border); background:var(--surface-soft); display:inline-flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:800; }
+    .roadmap-icon-btn { width:32px; height:32px; border-radius:10px; border:1px solid var(--border); background:var(--surface-soft); display:grid; place-items:center; font-size:.84rem; }
     .mini-item span { color:var(--muted); }
 
     .app-popup-modal { position: fixed; inset: 0; z-index: 55; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15, 23, 42, .42); backdrop-filter: blur(8px); }
@@ -519,11 +535,11 @@
     .admin-toolbar { display: flex; align-items: stretch; justify-content: flex-end; gap: 8px; margin-bottom: 0; flex-shrink: 0; }
     .admin-btn { min-height: 38px; padding: 0 13px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-solid); color: var(--text); font-weight: 750; }
     .admin-btn.danger { color: #b91c1c; }
-    .admin-action-btn { width: auto; min-width: 42px; height: 42px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-solid); color: var(--text); display: grid; place-items: center; font-size: 1.05rem; transition: transform .18s ease, border-color .18s ease, background .18s ease; }
-    .admin-action-btn:hover { transform: translateY(-1px); border-color: var(--border-strong); background: var(--surface-soft); }
-    .admin-action-btn.danger { color: #b91c1c; }
-    .admin-action-btn.add-mode { width: auto; min-width: 92px; padding: 0 14px; background: #ecfdf3; color: #15803d; border-color: rgba(21, 128, 61, .28); font-weight: 800; }
-    .admin-action-btn.add-mode:hover { background: #dcfce7; border-color: rgba(21, 128, 61, .42); }
+    .admin-icon-btn { width: auto; min-width: 42px; height: 42px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-solid); color: var(--text); display: grid; place-items: center; font-size: 1.05rem; transition: transform .18s ease, border-color .18s ease, background .18s ease; }
+    .admin-icon-btn:hover { transform: translateY(-1px); border-color: var(--border-strong); background: var(--surface-soft); }
+    .admin-icon-btn.danger { color: #b91c1c; }
+    .admin-icon-btn.add-mode { width: auto; min-width: 92px; padding: 0 14px; background: #ecfdf3; color: #15803d; border-color: rgba(21, 128, 61, .28); font-weight: 800; }
+    .admin-icon-btn.add-mode:hover { background: #dcfce7; border-color: rgba(21, 128, 61, .42); }
     .apps-admin-list { display: grid; gap: 10px; overflow-y: auto; overflow-x: hidden; padding-right: 4px; min-height: 0; }
     .admin-item { position: relative; border: 1px solid var(--border); border-radius: 16px; padding: 14px; background: var(--surface-solid); cursor: grab; transition: transform .16s ease, border-color .16s ease, opacity .16s ease; }
     .admin-item-main { padding-right: 86px; }
@@ -536,27 +552,6 @@
     .admin-item.editing-admin { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, .12); }
     .admin-item strong { display: block; letter-spacing: -.02em; }
     .admin-item span { color: var(--muted); font-size: .86rem; }
-    .featured-toggle { position: relative; display: flex; align-items: center; gap: 8px; padding: 0 12px; min-height: 42px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface-solid); color: var(--muted); font-weight: 750; cursor: pointer; transition: border-color .18s ease, background .18s ease, box-shadow .18s ease; }
-    .featured-toggle input { position: absolute; opacity: 0; pointer-events: none; }
-    .featured-text strong { display: block; color: var(--text); font-size: .88rem; line-height: 1.1; }
-    .featured-text span { display: none; }
-    .featured-toggle:has(input:checked) { border-color: #f59e0b; background: #fffbeb; box-shadow: 0 0 0 3px rgba(245, 158, 11, .12); }
-    body.dark .featured-toggle:has(input:checked) { background: rgba(245, 158, 11, .12); }
-
-    .split-section { width: 100%; align-items: stretch; }
-    .split-section > .card { min-width: 0; }
-    .split-section .panel { width: 100%; }
-    .split-section .lead { max-width: 100%; }
-    .roadmap-head, .os-header { min-width: 0; }
-
-    footer { margin:38px 0 8px; color:var(--muted); font-size:.92rem; text-align:center; }
-
-    @media (max-width: 980px) {
-      .hero, .split-section, .os-grid { grid-template-columns:1fr; }
-      .apps-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-      .main-nav { display:none; }
-    }
-
     @media (max-width: 860px) {
       .admin-grid, .form-grid { grid-template-columns: 1fr; }
       .admin-panel { padding: 0 18px 18px; overflow:auto; height:min(820px, calc(100vh - 48px)); }
@@ -571,10 +566,7 @@
       .edit-box-head { top: auto; }
       .edit-subbar { flex-direction: column; align-items: flex-start; }
       .admin-toolbar { justify-content: flex-start; }
-      .roadmap-quick-add { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 640px) {
+      @media (max-width: 640px) {
       .page { padding:16px; }
       .topbar { top:10px; border-radius:20px; }
       .panel { padding: 22px; }
@@ -707,14 +699,15 @@
         gap: 6px;
       }
 
-      .roadmap-action-btn {
-        min-width: 58px;
+      .roadmap-icon-btn {
+        width: 34px;
         height: 34px;
-        flex: 0 0 auto;
+        flex: 0 0 34px;
       }
     }
 
 
+    /* Roadmap: icono fijo + texto recortable */
     .mini-item-left {
       display: flex;
       align-items: center;
@@ -747,6 +740,14 @@
       outline: none;
     }
 
+    .roadmap-status-icon {
+      width: 22px;
+      min-width: 22px;
+      display: inline-grid;
+      place-items: center;
+      line-height: 1;
+    }
+
     @media (max-width: 860px) {
       .roadmap-status-select {
         width: 100%;
@@ -754,94 +755,6 @@
 
       .roadmap-status-select select {
         width: 100%;
-      }
-    }
-
-
-    /* Ajustes CraftLab: separación, scrolls y animaciones */
-    .hero-main { padding-top: clamp(26px, 4vw, 46px); }
-    .hero-metrics { display: none !important; }
-
-    .apps-scroll {
-      max-height: calc((318px * 3) + (18px * 2) + 4px);
-      overflow-y: scroll;
-      overflow-x: hidden;
-      padding-right: 8px;
-      scrollbar-gutter: stable;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-strong) var(--surface-soft);
-    }
-    #roadmapList {
-      overflow-y: scroll;
-      scrollbar-gutter: stable;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-strong) var(--surface-soft);
-    }
-
-    .apps-scroll::-webkit-scrollbar,
-    #roadmapList::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    .apps-scroll::-webkit-scrollbar-track,
-    #roadmapList::-webkit-scrollbar-track {
-      background: var(--surface-soft);
-      border-radius: 999px;
-    }
-
-    .apps-scroll::-webkit-scrollbar-thumb,
-    #roadmapList::-webkit-scrollbar-thumb {
-      background: var(--border-strong);
-      border-radius: 999px;
-      border: 2px solid var(--surface-soft);
-    }
-
-    /* Scroll visible permanente: además del scrollbar nativo, se dibuja una guía lateral fija.
-       En iOS/Safari los scrollbars nativos pueden ocultarse por sistema, por eso añadimos esta guía visual. */
-    .apps-scroll,
-    #roadmapList {
-      position: relative;
-      background-image:
-        linear-gradient(var(--surface-soft), var(--surface-soft)),
-        linear-gradient(var(--border-strong), var(--border-strong));
-      background-repeat: no-repeat, no-repeat;
-      background-position: right 0 top 0, right 3px top 12px;
-      background-size: 10px 100%, 4px 42px;
-      border-radius: 18px;
-    }
-
-    .apps-scroll { min-height: min(100%, 332px); }
-    #roadmapList { min-height: 222px; }
-
-
-    @keyframes craftCardIn {
-      from { opacity: 0; transform: translateY(14px) scale(.985); filter: blur(3px); }
-      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-    }
-
-    .app-card {
-      animation: craftCardIn .42s cubic-bezier(.2,.8,.2,1) both;
-    }
-
-    .app-card:nth-child(2) { animation-delay: .04s; }
-    .app-card:nth-child(3) { animation-delay: .08s; }
-    .app-card:nth-child(4) { animation-delay: .12s; }
-    .app-card:nth-child(5) { animation-delay: .16s; }
-    .app-card:nth-child(6) { animation-delay: .20s; }
-
-    .app-popup-modal { overscroll-behavior: contain; }
-    .app-popup-frame { min-height: 0; }
-
-    @media (max-width: 640px) {
-      .topbar { margin-bottom: 14px; }
-      .hero { gap: 16px; margin-bottom: 18px; }
-      .apps-scroll { max-height: calc((318px * 3) + (18px * 2) + 4px); padding-right: 6px; }
-      .app-popup-modal.keyboard-active {
-        align-items: stretch;
-      }
-      .app-popup-modal.keyboard-active .app-popup-panel {
-        height: calc(var(--stable-vh, 100dvh) - max(20px, env(safe-area-inset-top)) - max(20px, env(safe-area-inset-bottom)));
-        max-height: calc(var(--stable-vh, 100dvh) - max(20px, env(safe-area-inset-top)) - max(20px, env(safe-area-inset-bottom)));
       }
     }
 
@@ -865,13 +778,13 @@
         </nav>
 
         <div class="nav-actions">
-          <button class="icon-btn" id="manageAppsBtn" aria-label="Gestionar aplicaciones"><span class="svg-icon" data-svg="settings" aria-hidden="true"></span></button>
+          <button class="icon-btn" id="manageAppsBtn" aria-label="Gestionar aplicaciones">⚙</button>
           
           
 <div class="toggle-wrap">
-  <span class="icon-mini svg-icon" data-svg="sun" aria-hidden="true"></span>
+  <span class="icon-mini">☀</span>
   <button id="themeToggle" class="switch" aria-label="Cambiar tema" aria-pressed="false" type="button"></button>
-  <span class="icon-mini svg-icon" data-svg="moon" aria-hidden="true"></span>
+  <span class="icon-mini">☾</span>
 </div>
 
         </div>
@@ -889,6 +802,11 @@
             </div>
           </div>
 
+          <div class="hero-metrics" aria-label="Resumen de CraftLab">
+            <div class="metric"><strong>0</strong><span>Herramientas</span></div>
+            <div class="metric"><strong>0</strong><span>Categorías</span></div>
+            <div class="metric"><strong>—</strong><span>Destacada</span></div>
+          </div>
         </article>
 
         <aside class="card hero-preview" aria-label="Aplicaciones destacadas"></aside>
@@ -904,12 +822,13 @@
 
         <div class="toolbar">
           <label class="search">
+            <span aria-hidden="true">🔎</span>
             <input id="searchInput" type="search" placeholder="Buscar aplicación..." aria-label="Buscar aplicación" />
           </label>
           <div class="filters" id="filters" aria-label="Filtros de aplicaciones"></div>
         </div>
 
-        <div class="apps-scroll" aria-label="Listado de aplicaciones con scroll siempre visible"><div class="apps-grid" id="appsGrid"></div></div>
+        <div class="apps-grid" id="appsGrid"></div>
       </section>
 
       <section class="split-section" id="lab">
@@ -1004,15 +923,16 @@
             <div class="edit-subbar">
               <label class="featured-toggle">
                 <input type="checkbox" id="appFeatured" />
+                <span class="featured-icon">📌</span>
                 <span class="featured-text">
                   <strong>Destacada</strong>
                   <span>Mostrar arriba</span>
                 </span>
               </label>
               <div class="admin-toolbar" aria-label="Acciones de edición">
-                <button class="admin-action-btn" type="submit" title="Guardar app" aria-label="Guardar app">Guardar</button>
-                <button class="admin-action-btn" type="button" id="newAppBtn" title="Añadir" aria-label="Añadir">Añadir</button>
-                <button class="admin-action-btn danger" type="button" id="resetAppsBtn" title="Inicializar edición" aria-label="Inicializar edición">Inicializar</button>
+                <button class="admin-icon-btn" type="submit" title="Guardar app" aria-label="Guardar app">💾</button>
+                <button class="admin-icon-btn" type="button" id="newAppBtn" title="Añadir" aria-label="Añadir">Añadir</button>
+                <button class="admin-icon-btn danger" type="button" id="resetAppsBtn" title="Inicializar edición" aria-label="Inicializar edición">↺</button>
               </div>
             </div>
           </div>
@@ -1025,6 +945,8 @@
             <div class="field">
               <label for="appSlug">Id</label>
               <input id="appSlug" placeholder="tu-app" />
+            </div>
+            
             </div>
             <div class="field">
               <label for="appCategory">Categoría</label>
@@ -1081,6 +1003,7 @@
     let activeFilter = 'Todas';
     let selectedAdminIndex = null;
 
+    const iconChoices = [];
 
     const grid = document.getElementById('appsGrid');
     const searchInput = document.getElementById('searchInput');
@@ -1103,21 +1026,6 @@
     const appPopupTitle = document.getElementById('appPopupTitle');
     const appPopupUrl = document.getElementById('appPopupUrl');
     const closeAppPopupBtn = document.getElementById('closeAppPopupBtn');
-    const svgIconMap = {
-      settings: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 3.1a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.3 3.1h5l.3-3.1a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5c.07-.33.1-.66.1-1Z"/></svg>',
-      sun: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
-      moon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 14.7A8.6 8.6 0 0 1 9.3 3a7 7 0 1 0 11.7 11.7Z"/></svg>'
-    };
-
-    function getSvgIcon(name = 'settings') {
-      return svgIconMap[name] || '';
-    }
-
-    function hydrateStaticSvgIcons(root = document) {
-      root.querySelectorAll('[data-svg]').forEach((node) => {
-        node.innerHTML = getSvgIcon(node.dataset.svg);
-      });
-    }
 
     function setTheme(isDark) {
       document.body.classList.toggle('dark', isDark);
@@ -1211,23 +1119,27 @@
       list.forEach((app) => {
         if (app.featured) {
           kept += 1;
-          if (kept > 1) app.featured = false;
+          if (kept > 2) app.featured = false;
         }
       });
       return list;
     }
 
     function getFeaturedApps() {
-      return apps.filter((app) => app.featured).slice(0, 1);
+      return apps.filter((app) => app.featured).slice(0, 2);
     }
 
     function preview(app = {}) {
       const safeUrl = resolvePreviewUrl(app.url || '#');
       const isExternal = /^https?:\/\//i.test(app.url || '') && !safeUrl.startsWith(window.location.origin);
       const host = getUrlHost(safeUrl);
+      const faviconUrl = host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : '';
 
       const previewContent = isExternal ? `
         <div class="external-preview">
+          <div class="external-preview-icon">
+            ${faviconUrl ? `<img src="${escapeAttr(faviconUrl)}" alt="" loading="lazy">` : '🌐'}
+          </div>
           <div class="external-preview-text">
             <strong>${escapeHtml(host || app.title || 'Web externa')}</strong>
             <span>Vista embebida bloqueada por la web</span>
@@ -1333,16 +1245,19 @@
       roadmapList.innerHTML = roadmapItems.map((item, index) => `
         <div class="mini-item">
           <div class="mini-item-left">
+            
             <span class="roadmap-item-text">${escapeHtml(item.text)}</span>
           </div>
           <div class="roadmap-item-actions">
             <strong>${escapeHtml(item.status)}</strong>
-            <button class="roadmap-action-btn" data-roadmap-edit="${index}" type="button" aria-label="Editar idea">Editar</button>
-            <button class="roadmap-action-btn roadmap-delete-btn" data-roadmap-delete="${index}" type="button" aria-label="Eliminar idea">Eliminar</button>
+            <button class="roadmap-icon-btn" data-roadmap-edit="${index}" type="button">✏️</button>
+            <button class="roadmap-icon-btn roadmap-delete-btn" data-roadmap-delete="${index}" type="button" aria-label="Eliminar idea">✕</button>
           </div>
         </div>
       `).join('');
     }
+
+    function getRoadmapEmoji(status) { return ""; }
 
     function renderWorkspace() {
       const osGrid = document.getElementById('osGrid');
@@ -1413,6 +1328,7 @@
               <span class="version">${escapeHtml(app.version || 'v1.0')}</span>
             </div>
             ${preview(app)}
+            
             <h3>${escapeHtml(app.title)}</h3>
             <p>${escapeHtml(app.description || 'Sin descripción todavía.')}</p>
           </div>
@@ -1429,7 +1345,7 @@
       appsAdminList.innerHTML = apps.map((app, index) => `
         <div class="admin-item ${app.featured ? 'featured-admin' : ''} ${selectedAdminIndex === index ? 'editing-admin' : ''}" draggable="true" data-drag-index="${index}">
           <div class="admin-item-main">
-            <strong>${escapeHtml(app.title)}${app.featured ? ' · Destacada' : ''}${selectedAdminIndex === index ? ' · Editando' : ''}</strong>
+            <strong>${selectedAdminIndex === index ? '✏️ ' : ''}${app.featured ? '📌 ' : ''}${escapeHtml(app.icon || '▦')} ${escapeHtml(app.title)}</strong>
             <span>${escapeHtml(app.category)} · ${escapeHtml(app.status)} · ${escapeHtml(app.version || 'sin versión')}</span>
             <div class="item-actions">
               <button class="admin-btn" type="button" data-edit="${index}">Editar</button>
@@ -1456,6 +1372,19 @@
         adminNotice?.classList.remove('show');
       });
     });
+
+
+
+    const roadmapStatusSelect = document.getElementById('roadmapStatus');
+    const roadmapStatusIcon = document.getElementById('roadmapStatusIcon');
+
+    function updateRoadmapStatusIcon() {
+      if (!roadmapStatusSelect || !roadmapStatusIcon) return;
+      roadmapStatusIcon.textContent = getRoadmapEmoji(roadmapStatusSelect.value);
+    }
+
+    roadmapStatusSelect?.addEventListener('change', updateRoadmapStatusIcon);
+    updateRoadmapStatusIcon();
 
 
     renderApps();
@@ -1488,12 +1417,14 @@
       appEditIndex.value = '';
       document.getElementById('appTitle').value = '';
       document.getElementById('appSlug').value = '';
+      document.getElementById('appIcon').value = '🧩';
       document.getElementById('appCategory').value = '';
       document.getElementById('appStatus').value = 'Activa';
       document.getElementById('appVersion').value = 'v1.0';
       document.getElementById('appUrl').value = '';
       document.getElementById('appDescription').value = '';
       appFeatured.checked = false;
+      iconGrid?.classList.remove('open');
       clearValidation();
       setNewButtonMode(prepareNew);
       if (renderList && appsAdminList) renderAdminList();
@@ -1506,6 +1437,7 @@
       appEditIndex.value = index;
       document.getElementById('appTitle').value = app.title || '';
       document.getElementById('appSlug').value = app.id || '';
+      document.getElementById('appIcon').value = app.icon || '';
       document.getElementById('appCategory').value = app.category || '';
       document.getElementById('appStatus').value = app.status || 'Activa';
       document.getElementById('appVersion').value = app.version || '';
@@ -1531,6 +1463,7 @@
       return {
         title,
         id,
+        
         category: document.getElementById('appCategory').value.trim(),
         status,
         tag: getTagFromStatus(status),
@@ -1569,7 +1502,7 @@
       if (!app.featured) return true;
       const featuredCount = apps.filter((item) => item.featured).length;
       const alreadyFeatured = editIndex !== '' && Boolean(apps[Number(editIndex)]?.featured);
-      return featuredCount < 1 || alreadyFeatured;
+      return featuredCount < 2 || alreadyFeatured;
     }
 
     function saveFormApp() {
@@ -1581,7 +1514,7 @@
       if (!canSetFeatured(app, index)) {
         app.featured = false;
         appFeatured.checked = false;
-        alert('Solo puedes tener 1 app destacada al mismo tiempo.');
+        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
       }
 
       if (index === '') {
@@ -1601,6 +1534,7 @@
       renderApps();
       selectedAdminIndex = null;
       appEditIndex.value = '';
+      iconGrid?.classList.remove('open');
       adminModal.classList.remove('open');
       document.body.classList.remove('modal-open');
     }
@@ -1705,9 +1639,9 @@
       const wantsFeatured = appFeatured.checked;
       const featuredCount = apps.filter((item, itemIndex) => item.featured && itemIndex !== numericIndex).length;
 
-      if (wantsFeatured && featuredCount >= 1) {
+      if (wantsFeatured && featuredCount >= 2) {
         appFeatured.checked = false;
-        alert('Solo puedes tener 1 app destacada al mismo tiempo.');
+        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
         return;
       }
 
@@ -1730,6 +1664,7 @@
       const data = {
         title: document.getElementById('appTitle').value.trim(),
         id: document.getElementById('appSlug').value.trim(),
+        
         category: document.getElementById('appCategory').value.trim(),
         status: document.getElementById('appStatus').value,
         tag: getTagFromStatus(document.getElementById('appStatus').value),
@@ -1754,7 +1689,7 @@
       if (!canSetFeatured(data, '')) {
         data.featured = false;
         appFeatured.checked = false;
-        alert('Solo puedes tener 1 app destacada al mismo tiempo.');
+        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
       }
 
       apps.push(data);
@@ -1773,6 +1708,27 @@
     resetAppsBtn.addEventListener('click', () => {
       resetForm(true, false);
     });
+
+    iconGrid.innerHTML = iconChoices.map((icon) => `<button class="icon-choice" type="button" data-icon="${icon}">${icon}</button>`).join('');
+
+    openIconPickerBtn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      iconGrid.classList.toggle('open');
+    });
+
+    iconGrid.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const icon = event.target.dataset.icon;
+      if (!icon) return;
+      document.getElementById('appIcon').value = icon;
+      iconGrid.classList.remove('open');
+    });
+
+    document.addEventListener('pointerdown', (event) => {
+      if (!iconGrid.classList.contains('open')) return;
+      if (event.target.closest('#iconGrid')) return;
+      iconGrid.classList.remove('open');
+    }, true);
 
     appsAdminList.addEventListener('pointerdown', (event) => {
       const item = event.target.closest('.admin-item');
@@ -1932,11 +1888,12 @@
       console.assert(getTagFromStatus('En desarrollo') === 'beta', 'Estado En desarrollo debe mapear a beta');
       const sample = [{ featured: true }, { featured: true }, { featured: true }];
       normalizeFeatured(sample);
-      console.assert(sample.filter((app) => app.featured).length === 1, 'Máximo 1 app destacada');
-      console.assert(Array.isArray(apps), 'apps debe ser un array');
+      console.assert(sample.filter((app) => app.featured).length === 2, 'Máximo 2 apps destacadas');
+      console.assert(Array.isArray(loadApps()), 'loadApps debe devolver un array');
       console.assert(getCategories().includes('3D'), 'Los filtros deben usar categorías reales');
       console.assert([...getCategories()].join('|') === [...getCategories()].sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).join('|'), 'Los filtros deben estar ordenados ascendentemente');
       console.assert(generateUniqueId('Calculadora 3D') !== 'calculadora-3d' || apps.filter((app) => app.id === 'calculadora-3d').length === 1, 'El ID debe ser único');
+      console.assert(getRoadmapEmoji('En progreso') === '🔄', 'En progreso debe usar el icono correcto');
       console.assert(slugify('Mi App Ñ') === 'mi-app-n', 'slugify debe normalizar texto con acentos y ñ');
     }
     async function initCraftLab() {
@@ -1950,15 +1907,8 @@
 
 
     function updateViewportHeight() {
-      const layoutHeight = window.innerHeight;
-      const visualHeight = window.visualViewport ? window.visualViewport.height : layoutHeight;
-      const currentStable = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stable-vh')) || layoutHeight;
-      const stableHeight = Math.max(layoutHeight, currentStable);
-      const keyboardLikelyOpen = window.visualViewport && (layoutHeight - visualHeight > 120);
-
-      document.documentElement.style.setProperty('--app-vh', `${visualHeight}px`);
-      document.documentElement.style.setProperty('--stable-vh', `${stableHeight}px`);
-      appPopupModal?.classList.toggle('keyboard-active', Boolean(keyboardLikelyOpen));
+      const height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-vh', `${height}px`);
     }
 
     updateViewportHeight();
@@ -1966,7 +1916,6 @@
     window.visualViewport?.addEventListener('resize', updateViewportHeight);
 
     initTheme();
-    hydrateStaticSvgIcons();
 
 
   
