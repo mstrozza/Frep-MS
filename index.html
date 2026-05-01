@@ -93,7 +93,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      margin-bottom: 18px;
+      margin-bottom: 36px;
       padding: 14px 16px;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -203,7 +203,7 @@
       grid-template-columns: minmax(0, 1.12fr) minmax(330px, .88fr);
       gap: 22px;
       align-items: stretch;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     .card {
@@ -442,6 +442,8 @@
     .preview-bar { height:10px; border-radius:999px; background:var(--surface-solid); border:1px solid var(--border); }
     .preview-bar:nth-child(2) { width:78%; }
     .preview-bar:nth-child(3) { width:54%; }
+
+    .app-icon { width:44px; height:44px; border-radius:14px; display:grid; place-items:center; background:var(--surface-soft); color:var(--primary); font-size:1.24rem; margin-bottom:14px; }
     .app-card h3 { margin:0 0 8px; font-size:1.18rem; letter-spacing:-.035em; }
     .app-card p { color:var(--muted); margin:0; font-size:.95rem; }
     .card-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:18px; }
@@ -483,7 +485,7 @@
     .mini-item-left { display:flex; align-items:center; gap:10px; min-width:0; }
     .mini-item-left span { color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .roadmap-item-actions { display:flex; align-items:center; gap:8px; flex-shrink:0; }
-    .roadmap-icon-btn { width:auto; min-width:68px; height:32px; padding:0 10px; border-radius:10px; border:1px solid var(--border); background:var(--surface-soft); display:inline-flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:800; }
+    .roadmap-icon-btn { width:32px; height:32px; border-radius:10px; border:1px solid var(--border); background:var(--surface-soft); display:grid; place-items:center; font-size:.84rem; }
     .mini-item span { color:var(--muted); }
 
     .app-popup-modal { position: fixed; inset: 0; z-index: 55; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15, 23, 42, .42); backdrop-filter: blur(8px); }
@@ -733,10 +735,9 @@
       }
 
       .roadmap-icon-btn {
-        width: auto;
-        min-width: 72px;
+        width: 34px;
         height: 34px;
-        flex: 0 0 auto;
+        flex: 0 0 34px;
       }
     }
 
@@ -746,6 +747,15 @@
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    .roadmap-item-icon {
+      flex: 0 0 auto;
+      width: 22px;
+      min-width: 22px;
+      display: inline-grid;
+      place-items: center;
+      line-height: 1;
     }
 
     .roadmap-item-text {
@@ -792,146 +802,6 @@
       }
     }
 
-
-    /* Ajustes CraftLab: separación, scrolls, SVG y animaciones */
-    .hero-main { padding-top: clamp(26px, 4vw, 46px); }
-    .hero-metrics { display: none !important; }
-
-    .apps-scroll {
-      max-height: calc((318px * 3) + (18px * 2) + 4px);
-      overflow-y: scroll;
-      overflow-x: hidden;
-      padding-right: 8px;
-      scrollbar-gutter: stable;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-strong) var(--surface-soft);
-    }
-
-    .apps-scroll::-webkit-scrollbar,
-    #roadmapList::-webkit-scrollbar,
-    .apps-admin-list::-webkit-scrollbar,
-    .icon-grid::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    .apps-scroll::-webkit-scrollbar-track,
-    #roadmapList::-webkit-scrollbar-track,
-    .apps-admin-list::-webkit-scrollbar-track,
-    .icon-grid::-webkit-scrollbar-track {
-      background: var(--surface-soft);
-      border-radius: 999px;
-    }
-
-    .apps-scroll::-webkit-scrollbar-thumb,
-    #roadmapList::-webkit-scrollbar-thumb,
-    .apps-admin-list::-webkit-scrollbar-thumb,
-    .icon-grid::-webkit-scrollbar-thumb {
-      background: var(--border-strong);
-      border: 2px solid var(--surface-soft);
-      border-radius: 999px;
-    }
-
-    #roadmapList {
-      overflow-y: scroll;
-      scrollbar-gutter: stable;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-strong) var(--surface-soft);
-    }
-
-    /* Scroll visible permanente: además del scrollbar nativo, se dibuja una guía lateral fija.
-       En iOS/Safari los scrollbars nativos pueden ocultarse por sistema, por eso añadimos esta guía visual. */
-    .apps-scroll,
-    #roadmapList {
-      position: relative;
-      background-image:
-        linear-gradient(var(--surface-soft), var(--surface-soft)),
-        linear-gradient(var(--border-strong), var(--border-strong));
-      background-repeat: no-repeat, no-repeat;
-      background-position: right 0 top 0, right 3px top 12px;
-      background-size: 10px 100%, 4px 42px;
-      border-radius: 18px;
-    }
-
-    .apps-scroll { min-height: min(100%, 332px); }
-    #roadmapList { min-height: 222px; }
-
-    .icon-choice {
-      min-height: 42px;
-      border-radius: 12px;
-      transition: transform .16s ease, border-color .16s ease, background .16s ease;
-    }
-
-    .icon-choice:hover {
-      transform: translateY(-1px);
-    }
-
-    .icon-choice .svg-icon {
-      width: 22px;
-      height: 22px;
-    }
-
-
-    @keyframes craftCardIn {
-      from { opacity: 0; transform: translateY(14px) scale(.985); filter: blur(3px); }
-      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-    }
-
-    .app-card {
-      animation: craftCardIn .42s cubic-bezier(.2,.8,.2,1) both;
-    }
-
-    .app-card:nth-child(2) { animation-delay: .04s; }
-    .app-card:nth-child(3) { animation-delay: .08s; }
-    .app-card:nth-child(4) { animation-delay: .12s; }
-    .app-card:nth-child(5) { animation-delay: .16s; }
-    .app-card:nth-child(6) { animation-delay: .20s; }
-
-    .svg-icon {
-      width: 1.08em;
-      height: 1.08em;
-      display: inline-grid;
-      place-items: center;
-      flex: 0 0 auto;
-      color: currentColor;
-      line-height: 1;
-    }
-
-    .svg-icon svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .app-icon .svg-icon { width: 24px; height: 24px; }
-    .icon-choice { font-size: 0; }
-    .icon-choice .svg-icon { width: 20px; height: 20px; }
-    .roadmap-icon-btn { font-size: 0; color: var(--text); }
-    .roadmap-icon-btn .svg-icon { width: 16px; height: 16px; }
-    .roadmap-item-icon .svg-icon,
-    .roadmap-status-icon .svg-icon { width: 18px; height: 18px; }
-    .admin-item-main strong .svg-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 4px; }
-
-    .app-popup-modal { overscroll-behavior: contain; }
-    .app-popup-frame { min-height: 0; }
-
-    @media (max-width: 640px) {
-      .topbar { margin-bottom: 14px; }
-      .hero { gap: 16px; margin-bottom: 18px; }
-      .apps-scroll { max-height: calc((318px * 3) + (18px * 2) + 4px); padding-right: 6px; }
-      .app-popup-modal.keyboard-active {
-        align-items: stretch;
-      }
-      .app-popup-modal.keyboard-active .app-popup-panel {
-        height: calc(var(--stable-vh, 100dvh) - max(20px, env(safe-area-inset-top)) - max(20px, env(safe-area-inset-bottom)));
-        max-height: calc(var(--stable-vh, 100dvh) - max(20px, env(safe-area-inset-top)) - max(20px, env(safe-area-inset-bottom)));
-      }
-    }
-
   </style>
 </head>
 <body>
@@ -952,13 +822,13 @@
         </nav>
 
         <div class="nav-actions">
-          <button class="icon-btn" id="manageAppsBtn" aria-label="Gestionar aplicaciones"><span class="svg-icon" data-svg="settings" aria-hidden="true"></span></button>
+          <button class="icon-btn" id="manageAppsBtn" aria-label="Gestionar aplicaciones">⚙</button>
           
           
 <div class="toggle-wrap">
-  <span class="icon-mini svg-icon" data-svg="sun" aria-hidden="true"></span>
+  <span class="icon-mini">☀</span>
   <button id="themeToggle" class="switch" aria-label="Cambiar tema" aria-pressed="false" type="button"></button>
-  <span class="icon-mini svg-icon" data-svg="moon" aria-hidden="true"></span>
+  <span class="icon-mini">☾</span>
 </div>
 
         </div>
@@ -976,6 +846,11 @@
             </div>
           </div>
 
+          <div class="hero-metrics" aria-label="Resumen de CraftLab">
+            <div class="metric"><strong>0</strong><span>Herramientas</span></div>
+            <div class="metric"><strong>0</strong><span>Categorías</span></div>
+            <div class="metric"><strong>—</strong><span>Destacada</span></div>
+          </div>
         </article>
 
         <aside class="card hero-preview" aria-label="Aplicaciones destacadas"></aside>
@@ -991,12 +866,13 @@
 
         <div class="toolbar">
           <label class="search">
+            <span aria-hidden="true">🔎</span>
             <input id="searchInput" type="search" placeholder="Buscar aplicación..." aria-label="Buscar aplicación" />
           </label>
           <div class="filters" id="filters" aria-label="Filtros de aplicaciones"></div>
         </div>
 
-        <div class="apps-scroll" aria-label="Listado de aplicaciones con scroll siempre visible"><div class="apps-grid" id="appsGrid"></div></div>
+        <div class="apps-grid" id="appsGrid"></div>
       </section>
 
       <section class="split-section" id="lab">
@@ -1091,15 +967,16 @@
             <div class="edit-subbar">
               <label class="featured-toggle">
                 <input type="checkbox" id="appFeatured" />
+                <span class="featured-icon">📌</span>
                 <span class="featured-text">
                   <strong>Destacada</strong>
                   <span>Mostrar arriba</span>
                 </span>
               </label>
               <div class="admin-toolbar" aria-label="Acciones de edición">
-                <button class="admin-icon-btn" type="submit" title="Guardar app" aria-label="Guardar app">Guardar</button>
+                <button class="admin-icon-btn" type="submit" title="Guardar app" aria-label="Guardar app">💾</button>
                 <button class="admin-icon-btn" type="button" id="newAppBtn" title="Añadir" aria-label="Añadir">Añadir</button>
-                <button class="admin-icon-btn danger" type="button" id="resetAppsBtn" title="Inicializar edición" aria-label="Inicializar edición">Reset</button>
+                <button class="admin-icon-btn danger" type="button" id="resetAppsBtn" title="Inicializar edición" aria-label="Inicializar edición">↺</button>
               </div>
             </div>
           </div>
@@ -1112,6 +989,16 @@
             <div class="field">
               <label for="appSlug">Id</label>
               <input id="appSlug" placeholder="tu-app" />
+            </div>
+            <div class="field icon-picker">
+              <label for="appIcon">Icono</label>
+              <div class="icon-picker-row">
+                <input id="appIcon" placeholder="🧩" />
+                <button class="admin-btn" type="button" id="openIconPickerBtn">Elegir</button>
+              </div>
+              <div class="icon-picker-popover">
+                <div class="icon-grid" id="iconGrid" aria-label="Selector de iconos"></div>
+              </div>
             </div>
             <div class="field">
               <label for="appCategory">Categoría</label>
@@ -1168,6 +1055,13 @@
     let activeFilter = 'Todas';
     let selectedAdminIndex = null;
 
+    const iconChoices = [
+      '🧮','📄','🧩','🏠','🚗','🧪','💡','📦','🎨','🛠️','⚙️','📊','📝','🔎','🚀','⭐','📌','🗂️','💻','🧠','🔧','📐','🖨️','🧱',
+      '📱','🖥️','⌨️','🖱️','🧰','🔬','🧲','🪛','🔩','⚡','🔥','❄️','🌱','🌍','🗺️','📍','🧭','⏱️','⏰','📅','📆','🗓️','📈','📉',
+      '💶','💰','🧾','🏦','📋','✅','☑️','🔔','📣','📤','📥','📁','📂','🗃️','🔐','🔑','🛡️','🌐','🔗','🧵','🪄','🎯','🧬','🧿',
+      '🏗️','🏡','🪑','🚪','🛁','🚿','🍽️','🛒','📏','✏️','🖌️','🖼️','🎛️','🎚️','🎧','🎮','🕹️','🚲','🚙','✈️','🚚','📡','🤖','✨'
+    ];
+
     const grid = document.getElementById('appsGrid');
     const searchInput = document.getElementById('searchInput');
     const filters = document.getElementById('filters');
@@ -1179,6 +1073,8 @@
     const appsAdminList = document.getElementById('appsAdminList');
     const newAppBtn = document.getElementById('newAppBtn');
     const resetAppsBtn = document.getElementById('resetAppsBtn');
+    const openIconPickerBtn = document.getElementById('openIconPickerBtn');
+    const iconGrid = document.getElementById('iconGrid');
     const appFeatured = document.getElementById('appFeatured');
     const adminNotice = document.getElementById('adminNotice');
     const roadmapList = document.getElementById('roadmapList');
@@ -1189,22 +1085,6 @@
     const appPopupTitle = document.getElementById('appPopupTitle');
     const appPopupUrl = document.getElementById('appPopupUrl');
     const closeAppPopupBtn = document.getElementById('closeAppPopupBtn');
-
-
-    const svgIconMap = {
-      settings: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 3.1a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.3 3.1h5l.3-3.1a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5c.07-.33.1-.66.1-1Z"/></svg>',
-      sun: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
-      moon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 14.7A8.6 8.6 0 0 1 9.3 3a7 7 0 1 0 11.7 11.7Z"/></svg>',
-      app: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>'
-    };
-    function getSvgIcon(name = 'app') {
-      return svgIconMap[name] || svgIconMap.settings;
-    }
-    function hydrateStaticSvgIcons(root = document) {
-      root.querySelectorAll('[data-svg]').forEach((node) => {
-        node.innerHTML = getSvgIcon(node.dataset.svg);
-      });
-    }
 
     function setTheme(isDark) {
       document.body.classList.toggle('dark', isDark);
@@ -1298,14 +1178,14 @@
       list.forEach((app) => {
         if (app.featured) {
           kept += 1;
-          if (kept > 1) app.featured = false;
+          if (kept > 2) app.featured = false;
         }
       });
       return list;
     }
 
     function getFeaturedApps() {
-      return apps.filter((app) => app.featured).slice(0, 1);
+      return apps.filter((app) => app.featured).slice(0, 2);
     }
 
     function preview(app = {}) {
@@ -1316,6 +1196,9 @@
 
       const previewContent = isExternal ? `
         <div class="external-preview">
+          <div class="external-preview-icon">
+            ${faviconUrl ? `<img src="${escapeAttr(faviconUrl)}" alt="" loading="lazy">` : '🌐'}
+          </div>
           <div class="external-preview-text">
             <strong>${escapeHtml(host || app.title || 'Web externa')}</strong>
             <span>Vista embebida bloqueada por la web</span>
@@ -1421,16 +1304,26 @@
       roadmapList.innerHTML = roadmapItems.map((item, index) => `
         <div class="mini-item">
           <div class="mini-item-left">
+            <span class="roadmap-item-icon" aria-hidden="true">${getRoadmapEmoji(item.status)}</span>
             <span class="roadmap-item-text">${escapeHtml(item.text)}</span>
           </div>
           <div class="roadmap-item-actions">
             <strong>${escapeHtml(item.status)}</strong>
-            <button class="roadmap-icon-btn" data-roadmap-edit="${index}" type="button" aria-label="Editar idea">Editar</button>
-            <button class="roadmap-icon-btn roadmap-delete-btn" data-roadmap-delete="${index}" type="button" aria-label="Eliminar idea">Eliminar</button>
+            <button class="roadmap-icon-btn" data-roadmap-edit="${index}" type="button">✏️</button>
+            <button class="roadmap-icon-btn roadmap-delete-btn" data-roadmap-delete="${index}" type="button" aria-label="Eliminar idea">✕</button>
           </div>
         </div>
       `).join('');
     }
+
+    function getRoadmapEmoji(status) {
+      const normalized = status.toLowerCase();
+      if (normalized.includes('completado')) return '✅';
+      if (normalized.includes('progreso')) return '🔄';
+      if (normalized.includes('testing')) return '🔍';
+      return '💡';
+    }
+
     function renderWorkspace() {
       const osGrid = document.getElementById('osGrid');
       const osBars = document.getElementById('osBars');
@@ -1500,6 +1393,7 @@
               <span class="version">${escapeHtml(app.version || 'v1.0')}</span>
             </div>
             ${preview(app)}
+            <div class="app-icon">${escapeHtml(app.icon || '▦')}</div>
             <h3>${escapeHtml(app.title)}</h3>
             <p>${escapeHtml(app.description || 'Sin descripción todavía.')}</p>
           </div>
@@ -1516,7 +1410,7 @@
       appsAdminList.innerHTML = apps.map((app, index) => `
         <div class="admin-item ${app.featured ? 'featured-admin' : ''} ${selectedAdminIndex === index ? 'editing-admin' : ''}" draggable="true" data-drag-index="${index}">
           <div class="admin-item-main">
-            <strong>${selectedAdminIndex === index ? 'Editando · ' : ''}${app.featured ? 'Destacada · ' : ''}${escapeHtml(app.title)}</strong>
+            <strong>${selectedAdminIndex === index ? '✏️ ' : ''}${app.featured ? '📌 ' : ''}${escapeHtml(app.icon || '▦')} ${escapeHtml(app.title)}</strong>
             <span>${escapeHtml(app.category)} · ${escapeHtml(app.status)} · ${escapeHtml(app.version || 'sin versión')}</span>
             <div class="item-actions">
               <button class="admin-btn" type="button" data-edit="${index}">Editar</button>
@@ -1543,6 +1437,20 @@
         adminNotice?.classList.remove('show');
       });
     });
+
+
+
+    const roadmapStatusSelect = document.getElementById('roadmapStatus');
+    const roadmapStatusIcon = document.getElementById('roadmapStatusIcon');
+
+    function updateRoadmapStatusIcon() {
+      if (!roadmapStatusSelect || !roadmapStatusIcon) return;
+      roadmapStatusIcon.textContent = getRoadmapEmoji(roadmapStatusSelect.value);
+    }
+
+    roadmapStatusSelect?.addEventListener('change', updateRoadmapStatusIcon);
+    updateRoadmapStatusIcon();
+
 
     renderApps();
       renderAdminList();
@@ -1574,12 +1482,14 @@
       appEditIndex.value = '';
       document.getElementById('appTitle').value = '';
       document.getElementById('appSlug').value = '';
+      document.getElementById('appIcon').value = '🧩';
       document.getElementById('appCategory').value = '';
       document.getElementById('appStatus').value = 'Activa';
       document.getElementById('appVersion').value = 'v1.0';
       document.getElementById('appUrl').value = '';
       document.getElementById('appDescription').value = '';
       appFeatured.checked = false;
+      iconGrid?.classList.remove('open');
       clearValidation();
       setNewButtonMode(prepareNew);
       if (renderList && appsAdminList) renderAdminList();
@@ -1592,6 +1502,7 @@
       appEditIndex.value = index;
       document.getElementById('appTitle').value = app.title || '';
       document.getElementById('appSlug').value = app.id || '';
+      document.getElementById('appIcon').value = app.icon || '';
       document.getElementById('appCategory').value = app.category || '';
       document.getElementById('appStatus').value = app.status || 'Activa';
       document.getElementById('appVersion').value = app.version || '';
@@ -1617,6 +1528,7 @@
       return {
         title,
         id,
+        icon: document.getElementById('appIcon').value.trim() || '▦',
         category: document.getElementById('appCategory').value.trim(),
         status,
         tag: getTagFromStatus(status),
@@ -1655,7 +1567,7 @@
       if (!app.featured) return true;
       const featuredCount = apps.filter((item) => item.featured).length;
       const alreadyFeatured = editIndex !== '' && Boolean(apps[Number(editIndex)]?.featured);
-      return featuredCount < 1 || alreadyFeatured;
+      return featuredCount < 2 || alreadyFeatured;
     }
 
     function saveFormApp() {
@@ -1667,7 +1579,7 @@
       if (!canSetFeatured(app, index)) {
         app.featured = false;
         appFeatured.checked = false;
-        alert('Solo puedes tener 1 app destacada al mismo tiempo.');
+        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
       }
 
       if (index === '') {
@@ -1687,6 +1599,7 @@
       renderApps();
       selectedAdminIndex = null;
       appEditIndex.value = '';
+      iconGrid?.classList.remove('open');
       adminModal.classList.remove('open');
       document.body.classList.remove('modal-open');
     }
@@ -1791,9 +1704,9 @@
       const wantsFeatured = appFeatured.checked;
       const featuredCount = apps.filter((item, itemIndex) => item.featured && itemIndex !== numericIndex).length;
 
-      if (wantsFeatured && featuredCount >= 1) {
+      if (wantsFeatured && featuredCount >= 2) {
         appFeatured.checked = false;
-        alert('Solo puedes tener 1 app destacada al mismo tiempo.');
+        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
         return;
       }
 
@@ -1816,6 +1729,7 @@
       const data = {
         title: document.getElementById('appTitle').value.trim(),
         id: document.getElementById('appSlug').value.trim(),
+        icon: document.getElementById('appIcon').value.trim() || '🧩',
         category: document.getElementById('appCategory').value.trim(),
         status: document.getElementById('appStatus').value,
         tag: getTagFromStatus(document.getElementById('appStatus').value),
@@ -1840,7 +1754,7 @@
       if (!canSetFeatured(data, '')) {
         data.featured = false;
         appFeatured.checked = false;
-        alert('Solo puedes tener 1 app destacada al mismo tiempo.');
+        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
       }
 
       apps.push(data);
@@ -1859,6 +1773,28 @@
     resetAppsBtn.addEventListener('click', () => {
       resetForm(true, false);
     });
+
+    iconGrid.innerHTML = iconChoices.map((icon) => `<button class="icon-choice" type="button" data-icon="${icon}">${icon}</button>`).join('');
+
+    openIconPickerBtn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      iconGrid.classList.toggle('open');
+    });
+
+    iconGrid.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const icon = event.target.dataset.icon;
+      if (!icon) return;
+      document.getElementById('appIcon').value = icon;
+      iconGrid.classList.remove('open');
+    });
+
+    document.addEventListener('pointerdown', (event) => {
+      if (!iconGrid.classList.contains('open')) return;
+      if (event.target.closest('#iconGrid')) return;
+      iconGrid.classList.remove('open');
+    }, true);
+
     appsAdminList.addEventListener('pointerdown', (event) => {
       const item = event.target.closest('.admin-item');
       if (!item || event.target.closest('button')) return;
@@ -2017,11 +1953,12 @@
       console.assert(getTagFromStatus('En desarrollo') === 'beta', 'Estado En desarrollo debe mapear a beta');
       const sample = [{ featured: true }, { featured: true }, { featured: true }];
       normalizeFeatured(sample);
-      console.assert(sample.filter((app) => app.featured).length === 1, 'Máximo 1 app destacada');
-      console.assert(Array.isArray(apps), 'apps debe ser un array');
+      console.assert(sample.filter((app) => app.featured).length === 2, 'Máximo 2 apps destacadas');
+      console.assert(Array.isArray(loadApps()), 'loadApps debe devolver un array');
       console.assert(getCategories().includes('3D'), 'Los filtros deben usar categorías reales');
       console.assert([...getCategories()].join('|') === [...getCategories()].sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).join('|'), 'Los filtros deben estar ordenados ascendentemente');
       console.assert(generateUniqueId('Calculadora 3D') !== 'calculadora-3d' || apps.filter((app) => app.id === 'calculadora-3d').length === 1, 'El ID debe ser único');
+      console.assert(getRoadmapEmoji('En progreso') === '🔄', 'En progreso debe usar el icono correcto');
       console.assert(slugify('Mi App Ñ') === 'mi-app-n', 'slugify debe normalizar texto con acentos y ñ');
     }
     async function initCraftLab() {
@@ -2035,15 +1972,8 @@
 
 
     function updateViewportHeight() {
-      const layoutHeight = window.innerHeight;
-      const visualHeight = window.visualViewport ? window.visualViewport.height : layoutHeight;
-      const currentStable = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stable-vh')) || layoutHeight;
-      const stableHeight = Math.max(layoutHeight, currentStable);
-      const keyboardLikelyOpen = window.visualViewport && (layoutHeight - visualHeight > 120);
-
-      document.documentElement.style.setProperty('--app-vh', `${visualHeight}px`);
-      document.documentElement.style.setProperty('--stable-vh', `${stableHeight}px`);
-      appPopupModal?.classList.toggle('keyboard-active', Boolean(keyboardLikelyOpen));
+      const height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-vh', `${height}px`);
     }
 
     updateViewportHeight();
@@ -2051,7 +1981,6 @@
     window.visualViewport?.addEventListener('resize', updateViewportHeight);
 
     initTheme();
-    hydrateStaticSvgIcons();
 
 
   
