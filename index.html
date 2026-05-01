@@ -137,6 +137,9 @@
     }
 
     .icon-mini { width:16px; height:16px; opacity:.9; }
+    .svg-icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; line-height:1; }
+    .svg-icon svg { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+    .brand-mark { font-weight:850; }
 
     .switch {
       position:relative;
@@ -369,24 +372,6 @@
       z-index:1;
     }
 
-    .external-preview-icon {
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      background:var(--surface-solid);
-      border:1px solid var(--border);
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-      flex:0 0 auto;
-    }
-
-    .external-preview-icon img {
-      width:22px;
-      height:22px;
-      object-fit:contain;
-    }
-
     .external-preview-text {
       min-width:0;
     }
@@ -442,8 +427,6 @@
     .preview-bar { height:10px; border-radius:999px; background:var(--surface-solid); border:1px solid var(--border); }
     .preview-bar:nth-child(2) { width:78%; }
     .preview-bar:nth-child(3) { width:54%; }
-
-    .app-icon { width:44px; height:44px; border-radius:14px; display:grid; place-items:center; background:var(--surface-soft); color:var(--primary); font-size:1.24rem; margin-bottom:14px; }
     .app-card h3 { margin:0 0 8px; font-size:1.18rem; letter-spacing:-.035em; }
     .app-card p { color:var(--muted); margin:0; font-size:.95rem; }
     .card-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:18px; }
@@ -485,7 +468,7 @@
     .mini-item-left { display:flex; align-items:center; gap:10px; min-width:0; }
     .mini-item-left span { color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .roadmap-item-actions { display:flex; align-items:center; gap:8px; flex-shrink:0; }
-    .roadmap-icon-btn { width:32px; height:32px; border-radius:10px; border:1px solid var(--border); background:var(--surface-soft); display:grid; place-items:center; font-size:.84rem; }
+    .roadmap-action-btn { min-width:58px; height:32px; padding:0 10px; border-radius:10px; border:1px solid var(--border); background:var(--surface-soft); display:inline-flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:800; }
     .mini-item span { color:var(--muted); }
 
     .app-popup-modal { position: fixed; inset: 0; z-index: 55; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15, 23, 42, .42); backdrop-filter: blur(8px); }
@@ -536,11 +519,11 @@
     .admin-toolbar { display: flex; align-items: stretch; justify-content: flex-end; gap: 8px; margin-bottom: 0; flex-shrink: 0; }
     .admin-btn { min-height: 38px; padding: 0 13px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-solid); color: var(--text); font-weight: 750; }
     .admin-btn.danger { color: #b91c1c; }
-    .admin-icon-btn { width: auto; min-width: 42px; height: 42px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-solid); color: var(--text); display: grid; place-items: center; font-size: 1.05rem; transition: transform .18s ease, border-color .18s ease, background .18s ease; }
-    .admin-icon-btn:hover { transform: translateY(-1px); border-color: var(--border-strong); background: var(--surface-soft); }
-    .admin-icon-btn.danger { color: #b91c1c; }
-    .admin-icon-btn.add-mode { width: auto; min-width: 92px; padding: 0 14px; background: #ecfdf3; color: #15803d; border-color: rgba(21, 128, 61, .28); font-weight: 800; }
-    .admin-icon-btn.add-mode:hover { background: #dcfce7; border-color: rgba(21, 128, 61, .42); }
+    .admin-action-btn { width: auto; min-width: 42px; height: 42px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-solid); color: var(--text); display: grid; place-items: center; font-size: 1.05rem; transition: transform .18s ease, border-color .18s ease, background .18s ease; }
+    .admin-action-btn:hover { transform: translateY(-1px); border-color: var(--border-strong); background: var(--surface-soft); }
+    .admin-action-btn.danger { color: #b91c1c; }
+    .admin-action-btn.add-mode { width: auto; min-width: 92px; padding: 0 14px; background: #ecfdf3; color: #15803d; border-color: rgba(21, 128, 61, .28); font-weight: 800; }
+    .admin-action-btn.add-mode:hover { background: #dcfce7; border-color: rgba(21, 128, 61, .42); }
     .apps-admin-list { display: grid; gap: 10px; overflow-y: auto; overflow-x: hidden; padding-right: 4px; min-height: 0; }
     .admin-item { position: relative; border: 1px solid var(--border); border-radius: 16px; padding: 14px; background: var(--surface-solid); cursor: grab; transition: transform .16s ease, border-color .16s ease, opacity .16s ease; }
     .admin-item-main { padding-right: 86px; }
@@ -553,16 +536,8 @@
     .admin-item.editing-admin { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, .12); }
     .admin-item strong { display: block; letter-spacing: -.02em; }
     .admin-item span { color: var(--muted); font-size: .86rem; }
-    .icon-picker { position: relative; }
-    .icon-picker-popover { position: absolute; left: 0; top: calc(100% + 8px); z-index: 30; width: min(520px, calc(100vw - 80px)); }
-    .icon-picker-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
-    .icon-grid { display: none; grid-template-columns: repeat(10, minmax(36px, 1fr)); gap: 8px; max-height: 280px; overflow-y: auto; overflow-x: hidden; padding: 10px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-solid); box-shadow: 0 18px 50px rgba(15, 23, 42, .16); }
-    .icon-grid.open { display: grid; }
-    .icon-choice { min-height: 36px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-muted); display: grid; place-items: center; font-size: 1.05rem; }
-    .icon-choice:hover { border-color: var(--border-strong); background: var(--surface-soft); }
     .featured-toggle { position: relative; display: flex; align-items: center; gap: 8px; padding: 0 12px; min-height: 42px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface-solid); color: var(--muted); font-weight: 750; cursor: pointer; transition: border-color .18s ease, background .18s ease, box-shadow .18s ease; }
     .featured-toggle input { position: absolute; opacity: 0; pointer-events: none; }
-    .featured-icon { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 13px; background: var(--surface-soft); font-size: 1.1rem; }
     .featured-text strong { display: block; color: var(--text); font-size: .88rem; line-height: 1.1; }
     .featured-text span { display: none; }
     .featured-toggle:has(input:checked) { border-color: #f59e0b; background: #fffbeb; box-shadow: 0 0 0 3px rgba(245, 158, 11, .12); }
@@ -596,8 +571,6 @@
       .edit-box-head { top: auto; }
       .edit-subbar { flex-direction: column; align-items: flex-start; }
       .admin-toolbar { justify-content: flex-start; }
-      .icon-picker-popover { width: min(420px, calc(100vw - 56px)); }
-      .icon-grid { grid-template-columns: repeat(8, minmax(34px, 1fr)); }
       .roadmap-quick-add { grid-template-columns: 1fr; }
     }
 
@@ -734,28 +707,18 @@
         gap: 6px;
       }
 
-      .roadmap-icon-btn {
-        width: 34px;
+      .roadmap-action-btn {
+        min-width: 58px;
         height: 34px;
-        flex: 0 0 34px;
+        flex: 0 0 auto;
       }
     }
 
 
-    /* Roadmap: icono fijo + texto recortable */
     .mini-item-left {
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    .roadmap-item-icon {
-      flex: 0 0 auto;
-      width: 22px;
-      min-width: 22px;
-      display: inline-grid;
-      place-items: center;
-      line-height: 1;
     }
 
     .roadmap-item-text {
@@ -784,14 +747,6 @@
       outline: none;
     }
 
-    .roadmap-status-icon {
-      width: 22px;
-      min-width: 22px;
-      display: inline-grid;
-      place-items: center;
-      line-height: 1;
-    }
-
     @media (max-width: 860px) {
       .roadmap-status-select {
         width: 100%;
@@ -803,7 +758,7 @@
     }
 
 
-    /* Ajustes CraftLab: separación, scrolls, SVG y animaciones */
+    /* Ajustes CraftLab: separación, scrolls y animaciones */
     .hero-main { padding-top: clamp(26px, 4vw, 46px); }
     .hero-metrics { display: none !important; }
 
@@ -816,36 +771,29 @@
       scrollbar-width: thin;
       scrollbar-color: var(--border-strong) var(--surface-soft);
     }
-
-    .apps-scroll::-webkit-scrollbar,
-    #roadmapList::-webkit-scrollbar,
-    .apps-admin-list::-webkit-scrollbar,
-    .icon-grid::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    .apps-scroll::-webkit-scrollbar-track,
-    #roadmapList::-webkit-scrollbar-track,
-    .apps-admin-list::-webkit-scrollbar-track,
-    .icon-grid::-webkit-scrollbar-track {
-      background: var(--surface-soft);
-      border-radius: 999px;
-    }
-
-    .apps-scroll::-webkit-scrollbar-thumb,
-    #roadmapList::-webkit-scrollbar-thumb,
-    .apps-admin-list::-webkit-scrollbar-thumb,
-    .icon-grid::-webkit-scrollbar-thumb {
-      background: var(--border-strong);
-      border: 2px solid var(--surface-soft);
-      border-radius: 999px;
-    }
-
     #roadmapList {
       overflow-y: scroll;
       scrollbar-gutter: stable;
       scrollbar-width: thin;
       scrollbar-color: var(--border-strong) var(--surface-soft);
+    }
+
+    .apps-scroll::-webkit-scrollbar,
+    #roadmapList::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .apps-scroll::-webkit-scrollbar-track,
+    #roadmapList::-webkit-scrollbar-track {
+      background: var(--surface-soft);
+      border-radius: 999px;
+    }
+
+    .apps-scroll::-webkit-scrollbar-thumb,
+    #roadmapList::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: 999px;
+      border: 2px solid var(--surface-soft);
     }
 
     /* Scroll visible permanente: además del scrollbar nativo, se dibuja una guía lateral fija.
@@ -865,21 +813,6 @@
     .apps-scroll { min-height: min(100%, 332px); }
     #roadmapList { min-height: 222px; }
 
-    .icon-choice {
-      min-height: 42px;
-      border-radius: 12px;
-      transition: transform .16s ease, border-color .16s ease, background .16s ease;
-    }
-
-    .icon-choice:hover {
-      transform: translateY(-1px);
-    }
-
-    .icon-choice .svg-icon {
-      width: 22px;
-      height: 22px;
-    }
-
 
     @keyframes craftCardIn {
       from { opacity: 0; transform: translateY(14px) scale(.985); filter: blur(3px); }
@@ -895,36 +828,6 @@
     .app-card:nth-child(4) { animation-delay: .12s; }
     .app-card:nth-child(5) { animation-delay: .16s; }
     .app-card:nth-child(6) { animation-delay: .20s; }
-
-    .svg-icon {
-      width: 1.08em;
-      height: 1.08em;
-      display: inline-grid;
-      place-items: center;
-      flex: 0 0 auto;
-      color: currentColor;
-      line-height: 1;
-    }
-
-    .svg-icon svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .app-icon .svg-icon { width: 24px; height: 24px; }
-    .icon-choice { font-size: 0; }
-    .icon-choice .svg-icon { width: 20px; height: 20px; }
-    .roadmap-icon-btn { font-size: 0; color: var(--text); }
-    .roadmap-icon-btn .svg-icon { width: 16px; height: 16px; }
-    .roadmap-item-icon .svg-icon,
-    .roadmap-status-icon .svg-icon { width: 18px; height: 18px; }
-    .admin-item-main strong .svg-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 4px; }
 
     .app-popup-modal { overscroll-behavior: contain; }
     .app-popup-frame { min-height: 0; }
@@ -1001,7 +904,6 @@
 
         <div class="toolbar">
           <label class="search">
-            <span class="svg-icon" data-svg="search" aria-hidden="true"></span>
             <input id="searchInput" type="search" placeholder="Buscar aplicación..." aria-label="Buscar aplicación" />
           </label>
           <div class="filters" id="filters" aria-label="Filtros de aplicaciones"></div>
@@ -1102,16 +1004,15 @@
             <div class="edit-subbar">
               <label class="featured-toggle">
                 <input type="checkbox" id="appFeatured" />
-                <span class="featured-icon"><span class="svg-icon" data-svg="pin" aria-hidden="true"></span></span>
                 <span class="featured-text">
                   <strong>Destacada</strong>
                   <span>Mostrar arriba</span>
                 </span>
               </label>
               <div class="admin-toolbar" aria-label="Acciones de edición">
-                <button class="admin-icon-btn" type="submit" title="Guardar app" aria-label="Guardar app"><span class="svg-icon" data-svg="save" aria-hidden="true"></span></button>
-                <button class="admin-icon-btn" type="button" id="newAppBtn" title="Añadir" aria-label="Añadir">Añadir</button>
-                <button class="admin-icon-btn danger" type="button" id="resetAppsBtn" title="Inicializar edición" aria-label="Inicializar edición"><span class="svg-icon" data-svg="refresh" aria-hidden="true"></span></button>
+                <button class="admin-action-btn" type="submit" title="Guardar app" aria-label="Guardar app">Guardar</button>
+                <button class="admin-action-btn" type="button" id="newAppBtn" title="Añadir" aria-label="Añadir">Añadir</button>
+                <button class="admin-action-btn danger" type="button" id="resetAppsBtn" title="Inicializar edición" aria-label="Inicializar edición">Inicializar</button>
               </div>
             </div>
           </div>
@@ -1124,16 +1025,6 @@
             <div class="field">
               <label for="appSlug">Id</label>
               <input id="appSlug" placeholder="tu-app" />
-            </div>
-            <div class="field icon-picker">
-              <label for="appIcon">Icono</label>
-              <div class="icon-picker-row">
-                <input id="appIcon" placeholder="🧩" />
-                <button class="admin-btn" type="button" id="openIconPickerBtn">Elegir</button>
-              </div>
-              <div class="icon-picker-popover">
-                <div class="icon-grid" id="iconGrid" aria-label="Selector de iconos"></div>
-              </div>
             </div>
             <div class="field">
               <label for="appCategory">Categoría</label>
@@ -1190,12 +1081,6 @@
     let activeFilter = 'Todas';
     let selectedAdminIndex = null;
 
-    const iconChoices = [
-      '🧮','📄','🧩','🏠','🚗','🧪','💡','📦','🎨','🛠️','⚙️','📊','📝','🔎','🚀','⭐','📌','🗂️','💻','🧠','🔧','📐','🖨️','🧱',
-      '📱','🖥️','⌨️','🖱️','🧰','🔬','🧲','🪛','🔩','⚡','🔥','❄️','🌱','🌍','🗺️','📍','🧭','⏱️','⏰','📅','📆','🗓️','📈','📉',
-      '💶','💰','🧾','🏦','📋','✅','☑️','🔔','📣','📤','📥','📁','📂','🗃️','🔐','🔑','🛡️','🌐','🔗','🧵','🪄','🎯','🧬','🧿',
-      '🏗️','🏡','🪑','🚪','🛁','🚿','🍽️','🛒','📏','✏️','🖌️','🖼️','🎛️','🎚️','🎧','🎮','🕹️','🚲','🚙','✈️','🚚','📡','🤖','✨'
-    ];
 
     const grid = document.getElementById('appsGrid');
     const searchInput = document.getElementById('searchInput');
@@ -1208,8 +1093,6 @@
     const appsAdminList = document.getElementById('appsAdminList');
     const newAppBtn = document.getElementById('newAppBtn');
     const resetAppsBtn = document.getElementById('resetAppsBtn');
-    const openIconPickerBtn = document.getElementById('openIconPickerBtn');
-    const iconGrid = document.getElementById('iconGrid');
     const appFeatured = document.getElementById('appFeatured');
     const adminNotice = document.getElementById('adminNotice');
     const roadmapList = document.getElementById('roadmapList');
@@ -1220,119 +1103,14 @@
     const appPopupTitle = document.getElementById('appPopupTitle');
     const appPopupUrl = document.getElementById('appPopupUrl');
     const closeAppPopupBtn = document.getElementById('closeAppPopupBtn');
-
-
     const svgIconMap = {
       settings: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 3.1a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.3 3.1h5l.3-3.1a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5c.07-.33.1-.66.1-1Z"/></svg>',
       sun: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
-      moon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 14.7A8.6 8.6 0 0 1 9.3 3a7 7 0 1 0 11.7 11.7Z"/></svg>',
-      search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>',
-      pin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3 21 10l-4 1-4 8-2-2-4.5 4.5L5 20l4.5-4.5-2-2 8-4 1-4Z"/></svg>',
-      save: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h12l2 2v14H5Z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></svg>',
-      refresh: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v6h-6"/></svg>',
-      edit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="m14 7 3 3"/></svg>',
-      close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
-      check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>',
-      progress: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v6h-6"/></svg>',
-      idea: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 22h4M8.5 14.5A6 6 0 1 1 15.5 14c-.9.72-1.5 1.8-1.5 3h-4c0-1.1-.55-1.92-1.5-2.5Z"/></svg>',
-      test: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5l-4 8a4 4 0 0 0 3.6 5h6.8A4 4 0 0 0 19 16l-4-8V3"/><path d="M8 3h8M7 15h10"/></svg>',
-      app: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>',
-      calculator: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>',
-      document: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7Z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',
-      puzzle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v4a2 2 0 1 0 0 4v3h-4a2 2 0 1 1-4 0H3V8h4a2 2 0 1 0 2-3Z"/><path d="M15 11h6v10h-8v-4"/></svg>',
-      home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg>',
-      car: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13 7 7h10l2 6"/><path d="M4 13h16v5H4Z"/><circle cx="7" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/></svg>',
-      lab: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5l-4 8a4 4 0 0 0 3.6 5h6.8A4 4 0 0 0 19 16l-4-8V3"/><path d="M8 3h8M7 15h10"/></svg>',
-      box: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8 12 4l8 4-8 4Z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg>',
-      palette: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18h1.5a2 2 0 0 0 1-3.75 1.7 1.7 0 0 1 .8-3.25H17a4 4 0 0 0 0-8.6A9 9 0 0 0 12 3Z"/><circle cx="7.5" cy="11" r=".7"/><circle cx="10" cy="7.5" r=".7"/><circle cx="14" cy="7.5" r=".7"/></svg>',
-      tool: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0 5 5L11 20l-4-4 8.7-9.7Z"/><path d="M7 16l-3 3 1 1 3-3"/></svg>',
-      chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-8"/></svg>',
-      note: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16H6Z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
-      rocket: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4c3 0 5-1 6-1 0 1-1 3-1 6l-7 7-4-4Z"/><path d="M9 15l-4 1 1-4M14 4l6 6M7 17l-3 3M12 19l-1 3 4-4"/></svg>',
-      folder: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h7l2 2h9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>',
-      computer: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M9 21h6M12 16v5"/></svg>',
-      brain: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5a3 3 0 0 0-5 2.2A3.2 3.2 0 0 0 5 13a3 3 0 0 0 4 4v-12ZM15 5a3 3 0 0 1 5 2.2A3.2 3.2 0 0 1 19 13a3 3 0 0 1-4 4v-12Z"/><path d="M9 9h6M9 14h6"/></svg>',
-      ruler: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17 17 4l3 3L7 20Z"/><path d="M8 16l-2-2M11 13l-2-2M14 10l-2-2M17 7l-2-2"/></svg>',
-      printer: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V4h10v4M7 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7Z"/></svg>',
-      cube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v10l8 4 8-4V7Z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>',
-      phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg>',
-      keyboard: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M19 10h.01M7 14h10"/></svg>',
-      mouse: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="5"/><path d="M12 3v6"/></svg>',
-      magnet: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11V5h5v6a2 2 0 0 0 4 0V5h5v6a7 7 0 0 1-14 0Z"/><path d="M5 8h5M14 8h5"/></svg>',
-      bolt: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-8 12h7l-1 8 8-12h-7Z"/></svg>',
-      leaf: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10 4 5 9 5 19c10 0 15-5 15-15Z"/><path d="M5 19c4-6 8-9 15-15"/></svg>',
-      globe: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
-      map: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18 3 21V6l6-3 6 3 6-3v15l-6 3Z"/><path d="M9 3v15M15 6v15"/></svg>',
-      pinmap: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.4 7-12A7 7 0 0 0 5 9c0 6.6 7 12 7 12Z"/><circle cx="12" cy="9" r="2"/></svg>',
-      compass: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 5-5 2 2-5Z"/></svg>',
-      clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
-      calendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>',
-      euro: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6a7 7 0 1 0 0 12"/><path d="M4 10h10M4 14h10"/></svg>',
-      receipt: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
-      bank: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16M6 10v8M10 10v8M14 10v8M18 10v8M3 20h18M12 4l8 4H4Z"/></svg>',
-      bell: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 7 3 6 3 8H3c0-2 3-1 3-8Z"/><path d="M10 21h4"/></svg>',
-      upload: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>',
-      download: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg>',
-      lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
-      key: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="14" r="4"/><path d="M11 14h10M17 14v3M14 14v2"/></svg>',
-      shield: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6Z"/><path d="m9 12 2 2 4-5"/></svg>',
-      link: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>',
-      magic: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 10-10M12 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1ZM19 13l.7 2.3L22 16l-2.3.7L19 19l-.7-2.3L16 16l2.3-.7Z"/></svg>',
-      target: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
-      dna: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3c8 4 8 14 0 18M17 3c-8 4-8 14 0 18M8 7h8M7 12h10M8 17h8"/></svg>',
-      building: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4h14v17"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M9 16h.01M15 16h.01M3 21h18"/></svg>',
-      chair: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 13V5a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v8"/><path d="M5 13h14v4H5ZM7 17v4M17 17v4"/></svg>',
-      door: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 21V3h10v18"/><path d="M10 12h.01M5 21h14"/></svg>',
-      bath: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16v4a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4Z"/><path d="M7 12V6a3 3 0 0 1 6 0"/></svg>',
-      cart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2 12h10l3-8H7"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>',
-      brush: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4 20 10 10 20H4v-6Z"/><path d="M13 5l6 6M4 20l6-6"/></svg>',
-      sliders: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="11" cy="17" r="2"/></svg>',
-      headphones: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14a8 8 0 0 1 16 0"/><path d="M4 14v4a2 2 0 0 0 2 2h2v-6H4ZM20 14v4a2 2 0 0 1-2 2h-2v-6h4Z"/></svg>',
-      gamepad: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10h10a5 5 0 0 1 4 8l-1 1a2 2 0 0 1-3-.5L15 16H9l-2 2.5a2 2 0 0 1-3 .5l-1-1a5 5 0 0 1 4-8Z"/><path d="M8 14h.01M11 14h.01M17 13h.01M19 15h.01"/></svg>',
-      bike: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M8 17l4-8 3 8M12 9h3M10 7h3"/></svg>',
-      plane: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 16 22 3l-6 18-4-8-10 3Z"/><path d="M22 3 12 13"/></svg>',
-      truck: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v10H3Z"/><path d="M14 11h4l3 3v3h-7Z"/><circle cx="7" cy="19" r="2"/><circle cx="17" cy="19" r="2"/></svg>',
-      robot: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="7" width="14" height="12" rx="3"/><path d="M12 7V3M8 12h.01M16 12h.01M9 16h6"/><path d="M3 13h2M19 13h2"/></svg>',
-      sparkle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2Z"/><path d="M19 3l.8 2.2L22 6l-2.2.8L19 9l-.8-2.2L16 6l2.2-.8Z"/></svg>',
-      flame: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-4-3-6-5-9-.3 2-1.2 3.4-3 5-.7-1-1-2.4-1-4-3 2.4-5 5-5 8a7 7 0 0 0 7 7Z"/></svg>',
-      snow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M4 6l16 12M20 6 4 18M8 4l4 4 4-4M8 20l4-4 4 4"/></svg>',
-      speaker: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9Z"/><path d="M16 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/></svg>'
+      moon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 14.7A8.6 8.6 0 0 1 9.3 3a7 7 0 1 0 11.7 11.7Z"/></svg>'
     };
 
-    const emojiIconMap = {
-      '🧮':'calculator','📄':'document','🧩':'puzzle','🏠':'home','🚗':'car','🧪':'lab','💡':'idea','📦':'box','🎨':'palette','🛠️':'tool','🛠':'tool','⚙️':'settings','⚙':'settings','📊':'chart','📝':'note','🔎':'search','🚀':'rocket','⭐':'sparkle','📌':'pin','🗂️':'folder','💻':'computer','🧠':'brain','🔧':'tool','📐':'ruler','🖨️':'printer','🧱':'cube','📱':'phone','🖥️':'computer','⌨️':'keyboard','🖱️':'mouse','🧰':'box','🔬':'lab','🧲':'magnet','🪛':'tool','🔩':'settings','⚡':'bolt','🔥':'flame','❄️':'snow','🌱':'leaf','🌍':'globe','🗺️':'map','📍':'pinmap','🧭':'compass','⏱️':'clock','⏰':'clock','📅':'calendar','📆':'calendar','🗓️':'calendar','📈':'chart','📉':'chart','💶':'euro','💰':'euro','🧾':'receipt','🏦':'bank','📋':'note','✅':'check','☑️':'check','🔔':'bell','📣':'speaker','📤':'upload','📥':'download','📁':'folder','📂':'folder','🗃️':'folder','🔐':'lock','🔑':'key','🛡️':'shield','🌐':'globe','🔗':'link','🧵':'link','🪄':'magic','🎯':'target','🧬':'dna','🧿':'sparkle','🏗️':'building','🏡':'home','🪑':'chair','🚪':'door','🛁':'bath','🚿':'bath','🍽️':'home','🛒':'cart','📏':'ruler','✏️':'edit','🖌️':'brush','🖼️':'palette','🎛️':'sliders','🎚️':'sliders','🎧':'headphones','🎮':'gamepad','🕹️':'gamepad','🚲':'bike','🚙':'car','✈️':'plane','🚚':'truck','📡':'globe','🤖':'robot','✨':'sparkle'
-    };
-
-    function getSvgIcon(name = 'app') {
-      return svgIconMap[name] || svgIconMap.app;
-    }
-
-    function iconNameFromApp(app = {}) {
-      const rawIcon = String(app.icon || '').trim();
-      if (emojiIconMap[rawIcon]) return emojiIconMap[rawIcon];
-      const text = `${app.icon || ''} ${app.category || ''} ${app.title || ''}`.toLowerCase();
-      if (text.includes('calcul') || text.includes('presupuesto')) return 'calculator';
-      if (text.includes('pdf') || text.includes('doc') || text.includes('texto') || text.includes('nota')) return 'document';
-      if (text.includes('3d') || text.includes('impres') || text.includes('printer')) return 'printer';
-      if (text.includes('diseño') || text.includes('design') || text.includes('logo')) return 'palette';
-      if (text.includes('coche') || text.includes('auto') || text.includes('veh')) return 'car';
-      if (text.includes('casa') || text.includes('hogar') || text.includes('mueble')) return 'home';
-      if (text.includes('web') || text.includes('url') || text.includes('link')) return 'globe';
-      if (text.includes('chart') || text.includes('analytics') || text.includes('datos')) return 'chart';
-      if (text.includes('config') || text.includes('tool') || text.includes('herramient')) return 'tool';
-      return 'app';
-    }
-
-    function iconSvg(name = 'app', extraClass = '') {
-      return `<span class="svg-icon ${extraClass}" data-svg-rendered="${escapeAttr(name)}" aria-hidden="true">${getSvgIcon(name)}</span>`;
-    }
-
-    function getRoadmapIcon(status) {
-      const normalized = String(status || '').toLowerCase();
-      if (normalized.includes('completado')) return iconSvg('check');
-      if (normalized.includes('progreso')) return iconSvg('progress');
-      if (normalized.includes('testing')) return iconSvg('test');
-      return iconSvg('idea');
+    function getSvgIcon(name = 'settings') {
+      return svgIconMap[name] || '';
     }
 
     function hydrateStaticSvgIcons(root = document) {
@@ -1447,13 +1225,9 @@
       const safeUrl = resolvePreviewUrl(app.url || '#');
       const isExternal = /^https?:\/\//i.test(app.url || '') && !safeUrl.startsWith(window.location.origin);
       const host = getUrlHost(safeUrl);
-      const faviconUrl = host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : '';
 
       const previewContent = isExternal ? `
         <div class="external-preview">
-          <div class="external-preview-icon">
-            ${faviconUrl ? `<img src="${escapeAttr(faviconUrl)}" alt="" loading="lazy">` : '🌐'}
-          </div>
           <div class="external-preview-text">
             <strong>${escapeHtml(host || app.title || 'Web externa')}</strong>
             <span>Vista embebida bloqueada por la web</span>
@@ -1559,24 +1333,15 @@
       roadmapList.innerHTML = roadmapItems.map((item, index) => `
         <div class="mini-item">
           <div class="mini-item-left">
-            <span class="roadmap-item-icon" aria-hidden="true">${getRoadmapIcon(item.status)}</span>
             <span class="roadmap-item-text">${escapeHtml(item.text)}</span>
           </div>
           <div class="roadmap-item-actions">
             <strong>${escapeHtml(item.status)}</strong>
-            <button class="roadmap-icon-btn" data-roadmap-edit="${index}" type="button" aria-label="Editar idea">${iconSvg('edit')}</button>
-            <button class="roadmap-icon-btn roadmap-delete-btn" data-roadmap-delete="${index}" type="button" aria-label="Eliminar idea">${iconSvg('close')}</button>
+            <button class="roadmap-action-btn" data-roadmap-edit="${index}" type="button" aria-label="Editar idea">Editar</button>
+            <button class="roadmap-action-btn roadmap-delete-btn" data-roadmap-delete="${index}" type="button" aria-label="Eliminar idea">Eliminar</button>
           </div>
         </div>
       `).join('');
-    }
-
-    function getRoadmapEmoji(status) {
-      const normalized = status.toLowerCase();
-      if (normalized.includes('completado')) return '✅';
-      if (normalized.includes('progreso')) return '🔄';
-      if (normalized.includes('testing')) return '🔍';
-      return '💡';
     }
 
     function renderWorkspace() {
@@ -1648,7 +1413,6 @@
               <span class="version">${escapeHtml(app.version || 'v1.0')}</span>
             </div>
             ${preview(app)}
-            <div class="app-icon">${iconSvg(iconNameFromApp(app))}</div>
             <h3>${escapeHtml(app.title)}</h3>
             <p>${escapeHtml(app.description || 'Sin descripción todavía.')}</p>
           </div>
@@ -1665,7 +1429,7 @@
       appsAdminList.innerHTML = apps.map((app, index) => `
         <div class="admin-item ${app.featured ? 'featured-admin' : ''} ${selectedAdminIndex === index ? 'editing-admin' : ''}" draggable="true" data-drag-index="${index}">
           <div class="admin-item-main">
-            <strong>${selectedAdminIndex === index ? iconSvg('edit') : ''}${app.featured ? iconSvg('pin') : ''}${iconSvg(iconNameFromApp(app))} ${escapeHtml(app.title)}</strong>
+            <strong>${escapeHtml(app.title)}${app.featured ? ' · Destacada' : ''}${selectedAdminIndex === index ? ' · Editando' : ''}</strong>
             <span>${escapeHtml(app.category)} · ${escapeHtml(app.status)} · ${escapeHtml(app.version || 'sin versión')}</span>
             <div class="item-actions">
               <button class="admin-btn" type="button" data-edit="${index}">Editar</button>
@@ -1692,19 +1456,6 @@
         adminNotice?.classList.remove('show');
       });
     });
-
-
-
-    const roadmapStatusSelect = document.getElementById('roadmapStatus');
-    const roadmapStatusIcon = document.getElementById('roadmapStatusIcon');
-
-    function updateRoadmapStatusIcon() {
-      if (!roadmapStatusSelect || !roadmapStatusIcon) return;
-      roadmapStatusIcon.textContent = getRoadmapEmoji(roadmapStatusSelect.value);
-    }
-
-    roadmapStatusSelect?.addEventListener('change', updateRoadmapStatusIcon);
-    updateRoadmapStatusIcon();
 
 
     renderApps();
@@ -1737,14 +1488,12 @@
       appEditIndex.value = '';
       document.getElementById('appTitle').value = '';
       document.getElementById('appSlug').value = '';
-      document.getElementById('appIcon').value = '🧩';
       document.getElementById('appCategory').value = '';
       document.getElementById('appStatus').value = 'Activa';
       document.getElementById('appVersion').value = 'v1.0';
       document.getElementById('appUrl').value = '';
       document.getElementById('appDescription').value = '';
       appFeatured.checked = false;
-      iconGrid?.classList.remove('open');
       clearValidation();
       setNewButtonMode(prepareNew);
       if (renderList && appsAdminList) renderAdminList();
@@ -1757,7 +1506,6 @@
       appEditIndex.value = index;
       document.getElementById('appTitle').value = app.title || '';
       document.getElementById('appSlug').value = app.id || '';
-      document.getElementById('appIcon').value = app.icon || '';
       document.getElementById('appCategory').value = app.category || '';
       document.getElementById('appStatus').value = app.status || 'Activa';
       document.getElementById('appVersion').value = app.version || '';
@@ -1783,7 +1531,6 @@
       return {
         title,
         id,
-        icon: document.getElementById('appIcon').value.trim() || '▦',
         category: document.getElementById('appCategory').value.trim(),
         status,
         tag: getTagFromStatus(status),
@@ -1854,7 +1601,6 @@
       renderApps();
       selectedAdminIndex = null;
       appEditIndex.value = '';
-      iconGrid?.classList.remove('open');
       adminModal.classList.remove('open');
       document.body.classList.remove('modal-open');
     }
@@ -1984,7 +1730,6 @@
       const data = {
         title: document.getElementById('appTitle').value.trim(),
         id: document.getElementById('appSlug').value.trim(),
-        icon: document.getElementById('appIcon').value.trim() || '🧩',
         category: document.getElementById('appCategory').value.trim(),
         status: document.getElementById('appStatus').value,
         tag: getTagFromStatus(document.getElementById('appStatus').value),
@@ -2028,28 +1773,6 @@
     resetAppsBtn.addEventListener('click', () => {
       resetForm(true, false);
     });
-
-    iconGrid.innerHTML = iconChoices.map((icon) => `<button class="icon-choice" type="button" data-icon="${escapeAttr(icon)}" title="${escapeAttr(icon)}" aria-label="Seleccionar icono ${escapeAttr(icon)}">${iconSvg(iconNameFromApp({ icon }))}</button>`).join('');
-
-    openIconPickerBtn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      iconGrid.classList.toggle('open');
-    });
-
-    iconGrid.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const choice = event.target.closest('.icon-choice');
-      const icon = choice?.dataset.icon;
-      if (!icon) return;
-      document.getElementById('appIcon').value = icon;
-      iconGrid.classList.remove('open');
-    });
-
-    document.addEventListener('pointerdown', (event) => {
-      if (!iconGrid.classList.contains('open')) return;
-      if (event.target.closest('#iconGrid')) return;
-      iconGrid.classList.remove('open');
-    }, true);
 
     appsAdminList.addEventListener('pointerdown', (event) => {
       const item = event.target.closest('.admin-item');
@@ -2214,7 +1937,6 @@
       console.assert(getCategories().includes('3D'), 'Los filtros deben usar categorías reales');
       console.assert([...getCategories()].join('|') === [...getCategories()].sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).join('|'), 'Los filtros deben estar ordenados ascendentemente');
       console.assert(generateUniqueId('Calculadora 3D') !== 'calculadora-3d' || apps.filter((app) => app.id === 'calculadora-3d').length === 1, 'El ID debe ser único');
-      console.assert(getRoadmapEmoji('En progreso') === '🔄', 'En progreso debe usar el icono correcto');
       console.assert(slugify('Mi App Ñ') === 'mi-app-n', 'slugify debe normalizar texto con acentos y ñ');
     }
     async function initCraftLab() {
