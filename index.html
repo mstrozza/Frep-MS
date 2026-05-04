@@ -318,8 +318,8 @@
     .os-stat:hover,
     .admin-item:hover {
       border-color: var(--border-glow);
-      box-shadow: 0 16px 40px var(--primary-glow);
-      transform: translateY(-2px);
+      box-shadow: 0 18px 46px var(--primary-glow);
+      transform: translateY(-4px) scale(1.006);
     }
 
     .search:focus-within,
@@ -430,8 +430,8 @@
     /* Las tarjetas del ecosistema replican el hover de las tarjetas destacadas */
     .app-card:hover {
       border-color: var(--border-glow);
-      box-shadow: 0 16px 40px var(--primary-glow);
-      transform: translateY(-2px);
+      box-shadow: 0 18px 46px var(--primary-glow);
+      transform: translateY(-4px) scale(1.006);
     }
 
     .app-card:hover::before {
@@ -1098,15 +1098,15 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
 
 
 
-    /* Animaciones CraftLab: entrada, scroll y modales */
+    /* Animaciones CraftLab: entrada, scroll y modales — versión más visible */
     @keyframes craftFadeUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(30px) scale(.975); filter: blur(5px); }
+      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
     }
 
     @keyframes craftSoftScale {
-      from { opacity: 0; transform: translateY(12px) scale(.985); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(34px) scale(.94); filter: blur(7px); }
+      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
     }
 
     body.anim-ready .brand-mark,
@@ -1119,62 +1119,95 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
     body.anim-ready .hero-actions > *,
     body.anim-ready .hero-preview {
       opacity: 0;
-      animation: craftFadeUp .5s cubic-bezier(.22,1,.36,1) forwards;
+      animation: craftFadeUp .9s cubic-bezier(.22,1,.36,1) forwards;
+      will-change: transform, opacity, filter;
     }
 
-    body.anim-ready .brand-mark { animation-delay: .04s; }
-    body.anim-ready .brand > span:last-child { animation-delay: .08s; }
-    body.anim-ready .main-nav a:nth-child(1) { animation-delay: .10s; }
-    body.anim-ready .main-nav a:nth-child(2) { animation-delay: .125s; }
-    body.anim-ready .main-nav a:nth-child(3) { animation-delay: .15s; }
-    body.anim-ready .main-nav a:nth-child(4) { animation-delay: .175s; }
-    body.anim-ready .main-nav a:nth-child(5) { animation-delay: .20s; }
-    body.anim-ready .nav-actions > *:nth-child(1) { animation-delay: .225s; }
-    body.anim-ready .nav-actions > *:nth-child(2) { animation-delay: .25s; }
-    body.anim-ready .hero-main .eyebrow { animation-delay: .12s; }
-    body.anim-ready .hero-main h1 { animation-delay: .18s; }
-    body.anim-ready .hero-main .lead { animation-delay: .24s; }
-    body.anim-ready .hero-actions > *:nth-child(1) { animation-delay: .30s; }
-    body.anim-ready .hero-actions > *:nth-child(2) { animation-delay: .34s; }
-    body.anim-ready .hero-preview { animation-delay: .26s; animation-name: craftSoftScale; }
+    body.anim-ready .brand-mark { animation-delay: .06s; }
+    body.anim-ready .brand > span:last-child { animation-delay: .16s; }
+    body.anim-ready .main-nav a:nth-child(1) { animation-delay: .24s; }
+    body.anim-ready .main-nav a:nth-child(2) { animation-delay: .31s; }
+    body.anim-ready .main-nav a:nth-child(3) { animation-delay: .38s; }
+    body.anim-ready .main-nav a:nth-child(4) { animation-delay: .45s; }
+    body.anim-ready .main-nav a:nth-child(5) { animation-delay: .52s; }
+    body.anim-ready .nav-actions > *:nth-child(1) { animation-delay: .59s; }
+    body.anim-ready .nav-actions > *:nth-child(2) { animation-delay: .66s; }
+    body.anim-ready .hero-main .eyebrow { animation-delay: .24s; }
+    body.anim-ready .hero-main h1 { animation-delay: .38s; }
+    body.anim-ready .hero-main .lead { animation-delay: .54s; }
+    body.anim-ready .hero-actions > *:nth-child(1) { animation-delay: .70s; }
+    body.anim-ready .hero-actions > *:nth-child(2) { animation-delay: .82s; }
+    body.anim-ready .hero-preview { animation-delay: .62s; animation-name: craftSoftScale; animation-duration: 1s; }
 
     .reveal-on-scroll {
       opacity: 0;
-      transform: translateY(18px);
+      transform: translateY(42px) scale(.965);
+      filter: blur(6px);
       transition:
-        opacity .58s cubic-bezier(.22,1,.36,1),
-        transform .58s cubic-bezier(.22,1,.36,1),
-        border-color .22s ease,
-        box-shadow .22s ease,
-        background .22s ease;
+        opacity .95s cubic-bezier(.22,1,.36,1),
+        transform .95s cubic-bezier(.22,1,.36,1),
+        filter .95s cubic-bezier(.22,1,.36,1),
+        border-color .35s ease,
+        box-shadow .35s ease,
+        background .35s ease;
       transition-delay: var(--reveal-delay, 0s);
+      will-change: transform, opacity, filter;
     }
 
     .reveal-on-scroll.is-visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
+      filter: blur(0);
     }
 
-    .app-card.reveal-on-scroll,
-    .mini-item.reveal-on-scroll,
+    .app-card.reveal-on-scroll {
+      --reveal-delay: calc(var(--stagger, 0) * 120ms);
+    }
+
+    .mini-item.reveal-on-scroll {
+      --reveal-delay: calc(var(--stagger, 0) * 90ms);
+    }
+
     .os-stat.reveal-on-scroll {
-      --reveal-delay: calc(var(--stagger, 0) * 35ms);
+      --reveal-delay: calc(var(--stagger, 0) * 110ms);
+    }
+
+    .featured-app.reveal-on-scroll,
+    .os-chart.reveal-on-scroll {
+      --reveal-delay: 160ms;
     }
 
     .os-bar-fill {
-      transition: width .85s cubic-bezier(.22,1,.36,1);
+      transition: width 1.35s cubic-bezier(.22,1,.36,1);
+    }
+
+
+    /* Ajuste solicitado: las ideas del Roadmap aparecen todas a la vez, sin cascada. */
+    #roadmapList .mini-item.reveal-on-scroll {
+      --reveal-delay: 0s !important;
+      transition-delay: 0s !important;
+    }
+
+    /* Durante el cambio claro/oscuro, los colores y fondos se actualizan al instante. */
+    body.theme-switching,
+    body.theme-switching *,
+    body.theme-switching *::before,
+    body.theme-switching *::after {
+      transition: none !important;
+      animation-delay: 0s !important;
     }
 
     .app-popup-modal.open,
     .admin-modal.open,
     .roadmap-edit-modal.open {
-      animation: modalBackdropFade .18s ease forwards;
+      animation: modalBackdropFade .42s ease forwards;
     }
 
     .app-popup-modal.open .app-popup-panel,
     .admin-modal.open .admin-panel,
     .roadmap-edit-modal.open .roadmap-edit-panel {
-      animation: modalPanelIn .24s cubic-bezier(.22,1,.36,1) forwards;
+      animation: modalPanelIn .62s cubic-bezier(.22,1,.36,1) forwards;
+      will-change: transform, opacity, filter;
     }
 
     @keyframes modalBackdropFade {
@@ -1183,8 +1216,8 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
     }
 
     @keyframes modalPanelIn {
-      from { opacity: 0; transform: translateY(10px) scale(.97); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(34px) scale(.92); filter: blur(7px); }
+      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1200,6 +1233,110 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
       }
     }
 
+
+
+    /* Ajuste visual: app destacada con mayor presencia */
+    .hero {
+      grid-template-columns: minmax(0, 1fr) minmax(390px, .98fr);
+    }
+
+    .hero-preview {
+      padding: 24px;
+      align-content: stretch;
+    }
+
+    .hero-preview .featured-app {
+      min-height: 100%;
+      padding: clamp(26px, 3vw, 34px);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      background:
+        radial-gradient(circle at top right, var(--primary-soft), transparent 38%),
+        var(--surface-solid);
+    }
+
+    .hero-preview .featured-top {
+      margin-bottom: 6px;
+      align-items: flex-start;
+    }
+
+    .hero-preview .featured-top h2 {
+      font-size: clamp(1.65rem, 2.4vw, 2.25rem);
+      line-height: 1.02;
+      letter-spacing: -.055em;
+      margin-top: 2px;
+    }
+
+    .hero-preview .preview-window {
+      height: clamp(210px, 23vw, 285px);
+      margin-bottom: 0;
+      border-radius: 22px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.22);
+    }
+
+    .hero-preview .preview-iframe {
+      width: 200%;
+      height: 200%;
+      transform: scale(.5);
+    }
+
+    .hero-preview .external-preview {
+      padding: 22px;
+    }
+
+    .hero-preview .external-preview-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+    }
+
+    .hero-preview .external-preview-icon img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .hero-preview .external-preview-text strong {
+      font-size: 1.08rem;
+    }
+
+    .hero-preview .lead {
+      font-size: 1rem !important;
+      line-height: 1.55;
+      margin-top: 0 !important;
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-preview .preview-window {
+        height: clamp(210px, 48vw, 320px);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-preview {
+        padding: 18px;
+      }
+
+      .hero-preview .featured-app {
+        padding: 22px;
+        border-radius: 22px;
+      }
+
+      .hero-preview .featured-top {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .hero-preview .preview-window {
+        height: 205px;
+      }
+    }
 </style>
 </head>
 <body>
@@ -1493,7 +1630,7 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
             entry.target.classList.add('is-visible');
             revealObserver.unobserve(entry.target);
           });
-        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        }, { threshold: 0.10, rootMargin: '0px 0px -12% 0px' });
       }
 
       refreshMotion();
@@ -1569,7 +1706,9 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
     const appPopupUrl = document.getElementById('appPopupUrl');
     const closeAppPopupBtn = document.getElementById('closeAppPopupBtn');
 
-    function setTheme(isDark) {
+    function setTheme(isDark, instant = false) {
+      if (!instant) document.body.classList.add('theme-switching');
+
       document.body.classList.toggle('dark', isDark);
       localStorage.setItem(THEME_REMOVED_STORAGE_KEY, isDark ? 'dark' : 'light');
 
@@ -1578,12 +1717,18 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
         themeToggle.setAttribute('aria-pressed', String(isDark));
         themeToggle.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
       }
+
+      if (!instant) {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => document.body.classList.remove('theme-switching'));
+        });
+      }
     }
 
     function initTheme() {
       const savedTheme = localStorage.getItem(THEME_REMOVED_STORAGE_KEY);
       const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(savedTheme ? savedTheme === 'dark' : prefersDark);
+      setTheme(savedTheme ? savedTheme === 'dark' : prefersDark, true);
     }
 
     function isAdminUnlocked() {
