@@ -1357,6 +1357,59 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
         height: 205px;
       }
     }
+
+
+    /* Corrección localizada: eliminar el brillo/degradado de la tarjeta "Apps destacadas" del hero. */
+    .hero-preview.card::before,
+    .hero-preview.card::after {
+      content: none !important;
+      display: none !important;
+      opacity: 0 !important;
+      background: none !important;
+    }
+
+    .hero-preview .featured-app {
+      background: var(--surface-solid) !important;
+      background-image: none !important;
+      box-shadow: none;
+    }
+
+    .hero-preview .featured-app::before,
+    .hero-preview .featured-app::after {
+      content: none !important;
+      display: none !important;
+      opacity: 0 !important;
+      background: none !important;
+    }
+
+    .hero-preview:hover::before,
+    .hero-preview:hover::after,
+    .hero-preview .featured-app:hover::before,
+    .hero-preview .featured-app:hover::after {
+      opacity: 0 !important;
+      background: none !important;
+    }
+
+    /* Corrección localizada: barras del Roadmap visibles en tema claro y oscuro. */
+    .roadmap-chart .os-bar-track {
+      background: rgba(97, 99, 244, .10) !important;
+      border-color: rgba(97, 99, 244, .24) !important;
+    }
+
+    .roadmap-chart .os-bar-fill {
+      background: linear-gradient(90deg, #6163f4, #a2a2d3) !important;
+      box-shadow: 0 0 18px rgba(97, 99, 244, .34) !important;
+    }
+
+    body.dark .roadmap-chart .os-bar-track {
+      background: rgba(162, 162, 211, .13) !important;
+      border-color: rgba(194, 194, 255, .24) !important;
+    }
+
+    body.dark .roadmap-chart .os-bar-fill {
+      background: linear-gradient(90deg, #6163f4, #c2c2ff) !important;
+      box-shadow: 0 0 20px rgba(194, 194, 255, .28) !important;
+    }
 </style>
 </head>
 <body>
@@ -1685,7 +1738,8 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
     function animateOsBars(root = document) {
       const bars = root.querySelectorAll('.os-bar-fill');
       bars.forEach((bar) => {
-        const targetWidth = bar.style.width || '0%';
+        const targetWidth = bar.dataset.targetWidth || bar.style.width || '0%';
+        bar.dataset.targetWidth = targetWidth;
         bar.style.width = '0%';
 
         if (prefersReducedMotion) {
@@ -1695,7 +1749,7 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
 
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            bar.style.width = targetWidth;
+            bar.style.width = bar.dataset.targetWidth || targetWidth;
           });
         });
       });
