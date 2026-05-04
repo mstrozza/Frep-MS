@@ -2012,13 +2012,17 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
       // Métricas superiores eliminadas a nivel visual.
     }
 
-    function renderApps() {
+    function renderApps(options = {}) {
+      const { appsOnly = false } = options;
       normalizeFeatured(apps);
       renderFilters();
-      renderFeaturedApp();
-      renderWorkspace();
-      renderRoadmap();
-      updateSummaryMetrics();
+
+      if (!appsOnly) {
+        renderFeaturedApp();
+        renderWorkspace();
+        renderRoadmap();
+        updateSummaryMetrics();
+      }
 
       const term = searchInput.value.trim().toLowerCase();
       const filtered = apps.filter((app) => {
@@ -2044,7 +2048,7 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
           </div>
         </article>
       `).join('');
-      refreshMotion();
+      refreshMotion(appsOnly ? grid : document);
     }
 
     function renderAdminList() {
@@ -2300,10 +2304,10 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
       const chip = event.target.closest('.chip');
       if (!chip) return;
       activeFilter = chip.dataset.filter;
-      renderApps();
+      renderApps({ appsOnly: true });
     });
 
-    searchInput.addEventListener('input', renderApps);
+    searchInput.addEventListener('input', () => renderApps({ appsOnly: true }));
 
     
     manageAppsBtn.addEventListener('click', () => {
