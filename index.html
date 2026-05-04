@@ -1096,6 +1096,110 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
   box-shadow: 0 0 0 1px rgba(194, 194, 255, .18), 0 10px 24px rgba(0, 0, 0, .24);
 }
 
+
+
+    /* Animaciones CraftLab: entrada, scroll y modales */
+    @keyframes craftFadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes craftSoftScale {
+      from { opacity: 0; transform: translateY(12px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    body.anim-ready .brand-mark,
+    body.anim-ready .brand > span:last-child,
+    body.anim-ready .main-nav a,
+    body.anim-ready .nav-actions > *,
+    body.anim-ready .hero-main .eyebrow,
+    body.anim-ready .hero-main h1,
+    body.anim-ready .hero-main .lead,
+    body.anim-ready .hero-actions > *,
+    body.anim-ready .hero-preview {
+      opacity: 0;
+      animation: craftFadeUp .5s cubic-bezier(.22,1,.36,1) forwards;
+    }
+
+    body.anim-ready .brand-mark { animation-delay: .04s; }
+    body.anim-ready .brand > span:last-child { animation-delay: .08s; }
+    body.anim-ready .main-nav a:nth-child(1) { animation-delay: .10s; }
+    body.anim-ready .main-nav a:nth-child(2) { animation-delay: .125s; }
+    body.anim-ready .main-nav a:nth-child(3) { animation-delay: .15s; }
+    body.anim-ready .main-nav a:nth-child(4) { animation-delay: .175s; }
+    body.anim-ready .main-nav a:nth-child(5) { animation-delay: .20s; }
+    body.anim-ready .nav-actions > *:nth-child(1) { animation-delay: .225s; }
+    body.anim-ready .nav-actions > *:nth-child(2) { animation-delay: .25s; }
+    body.anim-ready .hero-main .eyebrow { animation-delay: .12s; }
+    body.anim-ready .hero-main h1 { animation-delay: .18s; }
+    body.anim-ready .hero-main .lead { animation-delay: .24s; }
+    body.anim-ready .hero-actions > *:nth-child(1) { animation-delay: .30s; }
+    body.anim-ready .hero-actions > *:nth-child(2) { animation-delay: .34s; }
+    body.anim-ready .hero-preview { animation-delay: .26s; animation-name: craftSoftScale; }
+
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(18px);
+      transition:
+        opacity .58s cubic-bezier(.22,1,.36,1),
+        transform .58s cubic-bezier(.22,1,.36,1),
+        border-color .22s ease,
+        box-shadow .22s ease,
+        background .22s ease;
+      transition-delay: var(--reveal-delay, 0s);
+    }
+
+    .reveal-on-scroll.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .app-card.reveal-on-scroll,
+    .mini-item.reveal-on-scroll,
+    .os-stat.reveal-on-scroll {
+      --reveal-delay: calc(var(--stagger, 0) * 35ms);
+    }
+
+    .os-bar-fill {
+      transition: width .85s cubic-bezier(.22,1,.36,1);
+    }
+
+    .app-popup-modal.open,
+    .admin-modal.open,
+    .roadmap-edit-modal.open {
+      animation: modalBackdropFade .18s ease forwards;
+    }
+
+    .app-popup-modal.open .app-popup-panel,
+    .admin-modal.open .admin-panel,
+    .roadmap-edit-modal.open .roadmap-edit-panel {
+      animation: modalPanelIn .24s cubic-bezier(.22,1,.36,1) forwards;
+    }
+
+    @keyframes modalBackdropFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modalPanelIn {
+      from { opacity: 0; transform: translateY(10px) scale(.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+
+      .reveal-on-scroll {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -1374,6 +1478,71 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
     const grid = document.getElementById('appsGrid');
     const searchInput = document.getElementById('searchInput');
     const filters = document.getElementById('filters');
+
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let revealObserver = null;
+
+    function initMotionSystem() {
+      document.body.classList.add('anim-ready');
+
+      if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+        revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      }
+
+      refreshMotion();
+    }
+
+    function refreshMotion(root = document) {
+      const revealTargets = root.querySelectorAll([
+        '#apps',
+        '#lab > .card',
+        '#about',
+        '.featured-app',
+        '.app-card',
+        '.os-stat',
+        '.mini-item',
+        '.os-chart'
+      ].join(','));
+
+      revealTargets.forEach((element, index) => {
+        element.classList.add('reveal-on-scroll');
+        element.style.setProperty('--stagger', String(index % 9));
+
+        if (prefersReducedMotion || !revealObserver) {
+          element.classList.add('is-visible');
+        } else if (!element.classList.contains('is-visible')) {
+          revealObserver.observe(element);
+        }
+      });
+
+      animateOsBars(root);
+    }
+
+    function animateOsBars(root = document) {
+      const bars = root.querySelectorAll('.os-bar-fill');
+      bars.forEach((bar) => {
+        const targetWidth = bar.style.width || '0%';
+        bar.style.width = '0%';
+
+        if (prefersReducedMotion) {
+          bar.style.width = targetWidth;
+          return;
+        }
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            bar.style.width = targetWidth;
+          });
+        });
+      });
+    }
     const manageAppsBtn = document.getElementById('manageAppsBtn');
     const adminModal = document.getElementById('adminModal');
     const closeAdminBtn = document.getElementById('closeAdminBtn');
@@ -1616,7 +1785,7 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
       if (!roadmapList) return;
 
       roadmapList.innerHTML = roadmapItems.map((item, index) => `
-        <div class="mini-item">
+        <div class="mini-item" style="--stagger:${index}">
           <div class="mini-item-left">
             <span class="roadmap-item-icon" aria-hidden="true">${getRoadmapIcon(item.status)}</span>
             <span class="roadmap-item-text">${escapeHtml(item.text)}</span>
@@ -1628,6 +1797,7 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
           </div>
         </div>
       `).join('');
+      refreshMotion(roadmapList);
     }
 
     function getRoadmapEmoji(status) {
@@ -1663,10 +1833,10 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
       const inDevelopment = apps.filter((app) => app.status.toLowerCase().includes('desarrollo')).length;
 
       osGrid.innerHTML = `
-        <div class="os-stat"><strong>${totalApps}</strong><span>Apps cargadas</span></div>
-        <div class="os-stat"><strong>${totalCategories}</strong><span>Categorías activas</span></div>
-        <div class="os-stat"><strong>${featuredCount}</strong><span>Apps destacadas</span></div>
-        <div class="os-stat"><strong>${inDevelopment}</strong><span>En desarrollo</span></div>
+        <div class="os-stat" style="--stagger:0"><strong>${totalApps}</strong><span>Apps cargadas</span></div>
+        <div class="os-stat" style="--stagger:1"><strong>${totalCategories}</strong><span>Categorías activas</span></div>
+        <div class="os-stat" style="--stagger:2"><strong>${featuredCount}</strong><span>Apps destacadas</span></div>
+        <div class="os-stat" style="--stagger:3"><strong>${inDevelopment}</strong><span>En desarrollo</span></div>
       `;
 
       const stats = [
@@ -1689,6 +1859,8 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
           </div>
         `).join('');
       }
+
+      refreshMotion(osGrid?.closest('#lab') || document);
     }
 
     function updateSummaryMetrics() {
@@ -1710,8 +1882,8 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
         return matchesFilter && matchesSearch;
       });
 
-      grid.innerHTML = filtered.map((app) => `
-        <article class="card app-card" data-index="${apps.indexOf(app)}" data-title="${escapeHtml(app.title)}">
+      grid.innerHTML = filtered.map((app, index) => `
+        <article class="card app-card" style="--stagger:${index}" data-index="${apps.indexOf(app)}" data-title="${escapeHtml(app.title)}">
           <div>
             <div class="card-topline">
               <span class="tag ${app.tag || getTagFromStatus(app.status)}">${escapeHtml(app.status)}</span>
@@ -1727,6 +1899,7 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
           </div>
         </article>
       `).join('');
+      refreshMotion();
     }
 
     function renderAdminList() {
@@ -2296,6 +2469,7 @@ body.dark .roadmap-icon-btn[title*="Editar"]:hover {
     async function initCraftLab() {
       await loadAppsFromJson();
       normalizeFeatured(apps);
+      initMotionSystem();
       renderApps();
       runCraftLabTests();
     }
