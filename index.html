@@ -590,8 +590,6 @@
     .preview-bar { height:10px; border-radius:999px; background:var(--surface-solid); border:1px solid var(--border); }
     .preview-bar:nth-child(2) { width:78%; }
     .preview-bar:nth-child(3) { width:54%; }
-
-    .app-icon { width:44px; height:44px; border-radius:14px; display:grid; place-items:center; background:var(--surface-soft); color:var(--primary); font-size:1.24rem; margin-bottom:14px; }
     .app-card h3 { margin:0 0 8px; font-size:1.18rem; letter-spacing:-.035em; }
     .app-card p { color:var(--muted); margin:0; font-size:.95rem; }
     .card-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:18px; }
@@ -714,13 +712,6 @@
     .admin-item.editing-admin { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, .12); }
     .admin-item strong { display: block; letter-spacing: -.02em; }
     .admin-item span { color: var(--muted); font-size: .86rem; }
-    .icon-picker { position: relative; }
-    .icon-picker-popover { position: absolute; left: 0; top: calc(100% + 8px); z-index: 30; width: min(520px, calc(100vw - 80px)); }
-    .icon-picker-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
-    .icon-grid { display: none; grid-template-columns: repeat(10, minmax(36px, 1fr)); gap: 8px; max-height: 280px; overflow-y: auto; overflow-x: hidden; padding: 10px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-solid); box-shadow: 0 18px 50px rgba(15, 23, 42, .16); }
-    .icon-grid.open { display: grid; }
-    .icon-choice { min-height: 36px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-muted); display: grid; place-items: center; font-size: 1.05rem; }
-    .icon-choice:hover { border-color: var(--border-strong); background: var(--surface-soft); }
     .featured-toggle { position: relative; display: flex; align-items: center; gap: 8px; padding: 0 12px; min-height: 42px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface-solid); color: var(--muted); font-weight: 750; cursor: pointer; transition: border-color .18s ease, background .18s ease, box-shadow .18s ease; }
     .featured-toggle input { position: absolute; opacity: 0; pointer-events: none; }
     .featured-icon { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 13px; background: var(--surface-soft); font-size: 1.1rem; }
@@ -757,8 +748,6 @@
       .edit-box-head { top: auto; }
       .edit-subbar { flex-direction: column; align-items: flex-start; }
       .admin-toolbar { justify-content: flex-start; }
-      .icon-picker-popover { width: min(420px, calc(100vw - 56px)); }
-      .icon-grid { grid-template-columns: repeat(8, minmax(34px, 1fr)); }
       .roadmap-quick-add { grid-template-columns: 1fr; }
     }
 
@@ -950,11 +939,28 @@
 
     .roadmap-item-icon {
       flex: 0 0 auto;
-      width: 22px;
-      min-width: 22px;
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
       display: inline-grid;
       place-items: center;
       line-height: 1;
+      border-radius: 11px;
+      color: var(--primary-hover);
+      background: var(--primary-soft);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    .roadmap-item-icon svg,
+    .roadmap-status-icon svg,
+    .roadmap-icon-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .roadmap-item-text {
@@ -1001,6 +1007,25 @@
       }
     }
 
+
+    .roadmap-edit-modal { position: fixed; inset: 0; z-index: 65; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(15, 23, 42, .38); backdrop-filter: blur(8px); }
+    .roadmap-edit-modal.open { display: flex; }
+    .roadmap-edit-panel { width: min(560px, 100%); background: var(--surface-solid); border: 1px solid var(--border); border-radius: 26px; box-shadow: 0 32px 90px rgba(0,0,0,.28); overflow: hidden; }
+    .roadmap-edit-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 22px 24px 18px; border-bottom: 1px solid var(--border); background: var(--surface-solid); }
+    .roadmap-edit-head h2 { margin-bottom: 4px; font-size: 1.35rem; }
+    .roadmap-edit-head p { margin: 0; color: var(--muted); font-size: .92rem; }
+    .roadmap-edit-body { display: grid; gap: 14px; padding: 22px 24px 24px; }
+    .roadmap-edit-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+    .roadmap-edit-actions .btn { min-height: 42px; }
+
+    @media (max-width: 640px) {
+      .roadmap-edit-modal { padding: 12px; }
+      .roadmap-edit-panel { border-radius: 22px; }
+      .roadmap-edit-head, .roadmap-edit-body { padding-inline: 18px; }
+      .roadmap-edit-actions { flex-direction: column-reverse; }
+      .roadmap-edit-actions .btn { width: 100%; }
+    }
+
   </style>
 </head>
 <body>
@@ -1043,12 +1068,6 @@
               <a class="btn primary" href="#apps">Explorar apps</a>
               <a class="btn secondary" href="#roadmap">Ver roadmap</a>
             </div>
-          </div>
-
-          <div class="hero-metrics" aria-label="Resumen de CraftLab">
-            <div class="metric"><strong>0</strong><span>Herramientas</span></div>
-            <div class="metric"><strong>0</strong><span>Categorías</span></div>
-            <div class="metric"><strong>—</strong><span>Destacada</span></div>
           </div>
         </article>
 
@@ -1189,16 +1208,6 @@
               <label for="appSlug">Id</label>
               <input id="appSlug" placeholder="tu-app" />
             </div>
-            <div class="field icon-picker">
-              <label for="appIcon">Icono</label>
-              <div class="icon-picker-row">
-                <input id="appIcon" placeholder="🧩" />
-                <button class="admin-btn" type="button" id="openIconPickerBtn">Elegir</button>
-              </div>
-              <div class="icon-picker-popover">
-                <div class="icon-grid" id="iconGrid" aria-label="Selector de iconos"></div>
-              </div>
-            </div>
             <div class="field">
               <label for="appCategory">Categoría</label>
               <input id="appCategory" placeholder="Utilidades" />
@@ -1237,6 +1246,41 @@
     </div>
   </section>
 
+
+  <section class="roadmap-edit-modal" id="roadmapEditModal" aria-modal="true" role="dialog" aria-labelledby="roadmapEditTitle">
+    <div class="roadmap-edit-panel">
+      <div class="roadmap-edit-head">
+        <div>
+          <div class="eyebrow">Roadmap</div>
+          <h2 id="roadmapEditTitle">Editar idea</h2>
+          <p>Modifica la descripción y el estado de la anotación seleccionada.</p>
+        </div>
+        <button class="icon-btn" id="closeRoadmapEditBtn" aria-label="Cerrar edición">Cerrar</button>
+      </div>
+      <div class="roadmap-edit-body">
+        <input type="hidden" id="roadmapEditIndex" value="" />
+        <div class="field full">
+          <label for="roadmapEditText">Descripción</label>
+          <textarea id="roadmapEditText" placeholder="Describe la idea o mejora"></textarea>
+        </div>
+        <div class="field full">
+          <label for="roadmapEditStatus">Estado</label>
+          <select id="roadmapEditStatus">
+            <option>Idea</option>
+            <option>En progreso</option>
+            <option>Testing</option>
+            <option>Completado</option>
+          </select>
+        </div>
+        <div class="roadmap-edit-actions">
+          <button class="btn secondary" id="cancelRoadmapEditBtn" type="button">Cancelar</button>
+          <button class="btn primary" id="saveRoadmapEditBtn" type="button">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
   <script>
     const defaultApps = [];
     const APP_DATA_URL = './apps.json'; // Archivo público desde el que se cargan las tarjetas.
@@ -1254,13 +1298,6 @@
     let activeFilter = 'Todas';
     let selectedAdminIndex = null;
 
-    const iconChoices = [
-      '🧮','📄','🧩','🏠','🚗','🧪','💡','📦','🎨','🛠️','⚙️','📊','📝','🔎','🚀','⭐','📌','🗂️','💻','🧠','🔧','📐','🖨️','🧱',
-      '📱','🖥️','⌨️','🖱️','🧰','🔬','🧲','🪛','🔩','⚡','🔥','❄️','🌱','🌍','🗺️','📍','🧭','⏱️','⏰','📅','📆','🗓️','📈','📉',
-      '💶','💰','🧾','🏦','📋','✅','☑️','🔔','📣','📤','📥','📁','📂','🗃️','🔐','🔑','🛡️','🌐','🔗','🧵','🪄','🎯','🧬','🧿',
-      '🏗️','🏡','🪑','🚪','🛁','🚿','🍽️','🛒','📏','✏️','🖌️','🖼️','🎛️','🎚️','🎧','🎮','🕹️','🚲','🚙','✈️','🚚','📡','🤖','✨'
-    ];
-
     const grid = document.getElementById('appsGrid');
     const searchInput = document.getElementById('searchInput');
     const filters = document.getElementById('filters');
@@ -1272,12 +1309,17 @@
     const appsAdminList = document.getElementById('appsAdminList');
     const newAppBtn = document.getElementById('newAppBtn');
     const resetAppsBtn = document.getElementById('resetAppsBtn');
-    const openIconPickerBtn = document.getElementById('openIconPickerBtn');
-    const iconGrid = document.getElementById('iconGrid');
     const appFeatured = document.getElementById('appFeatured');
     const adminNotice = document.getElementById('adminNotice');
     const roadmapList = document.getElementById('roadmapList');
     const saveRoadmapBtn = document.getElementById('saveRoadmapBtn');
+    const roadmapEditModal = document.getElementById('roadmapEditModal');
+    const roadmapEditIndex = document.getElementById('roadmapEditIndex');
+    const roadmapEditText = document.getElementById('roadmapEditText');
+    const roadmapEditStatus = document.getElementById('roadmapEditStatus');
+    const closeRoadmapEditBtn = document.getElementById('closeRoadmapEditBtn');
+    const cancelRoadmapEditBtn = document.getElementById('cancelRoadmapEditBtn');
+    const saveRoadmapEditBtn = document.getElementById('saveRoadmapEditBtn');
     const themeToggle = document.getElementById('themeToggle');
     const appPopupModal = document.getElementById('appPopupModal');
     const appPopupFrame = document.getElementById('appPopupFrame');
@@ -1377,14 +1419,14 @@
       list.forEach((app) => {
         if (app.featured) {
           kept += 1;
-          if (kept > 2) app.featured = false;
+          if (kept > 1) app.featured = false;
         }
       });
       return list;
     }
 
     function getFeaturedApps() {
-      return apps.filter((app) => app.featured).slice(0, 2);
+      return apps.filter((app) => app.featured).slice(0, 1);
     }
 
     function preview(app = {}) {
@@ -1503,13 +1545,13 @@
       roadmapList.innerHTML = roadmapItems.map((item, index) => `
         <div class="mini-item">
           <div class="mini-item-left">
-            <span class="roadmap-item-icon" aria-hidden="true">${getRoadmapEmoji(item.status)}</span>
+            <span class="roadmap-item-icon" aria-hidden="true">${getRoadmapIcon(item.status)}</span>
             <span class="roadmap-item-text">${escapeHtml(item.text)}</span>
           </div>
           <div class="roadmap-item-actions">
             <strong>${escapeHtml(item.status)}</strong>
-            <button class="roadmap-icon-btn" data-roadmap-edit="${index}" type="button">✏️</button>
-            <button class="roadmap-icon-btn roadmap-delete-btn" data-roadmap-delete="${index}" type="button" aria-label="Eliminar idea">✕</button>
+            <button class="roadmap-icon-btn" data-roadmap-edit="${index}" type="button" aria-label="Editar idea"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
+            <button class="roadmap-icon-btn roadmap-delete-btn" data-roadmap-delete="${index}" type="button" aria-label="Eliminar idea"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
           </div>
         </div>
       `).join('');
@@ -1521,6 +1563,20 @@
       if (normalized.includes('progreso')) return '🔄';
       if (normalized.includes('testing')) return '🔍';
       return '💡';
+    }
+
+    function getRoadmapIcon(status) {
+      const normalized = String(status || '').toLowerCase();
+      if (normalized.includes('completado')) {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+      }
+      if (normalized.includes('progreso')) {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>';
+      }
+      if (normalized.includes('testing')) {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
+      }
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M8 14c-1.2-1.1-2-2.8-2-4.5A6 6 0 0 1 18 9.5c0 1.7-.8 3.4-2 4.5-.7.6-1 1.5-1 2H9c0-.5-.3-1.4-1-2z"/></svg>';
     }
 
     function renderWorkspace() {
@@ -1563,10 +1619,7 @@
     }
 
     function updateSummaryMetrics() {
-      const metrics = document.querySelectorAll('.metric strong');
-      if (metrics[0]) metrics[0].textContent = apps.length;
-      if (metrics[1]) metrics[1].textContent = new Set(apps.map((app) => app.category)).size;
-      if (metrics[2]) metrics[2].textContent = getFeaturedApps().length || '—';
+      // Métricas superiores eliminadas a nivel visual.
     }
 
     function renderApps() {
@@ -1592,7 +1645,6 @@
               <span class="version">${escapeHtml(app.version || 'v1.0')}</span>
             </div>
             ${preview(app)}
-            <div class="app-icon">${escapeHtml(app.icon || '▦')}</div>
             <h3>${escapeHtml(app.title)}</h3>
             <p>${escapeHtml(app.description || 'Sin descripción todavía.')}</p>
           </div>
@@ -1609,7 +1661,7 @@
       appsAdminList.innerHTML = apps.map((app, index) => `
         <div class="admin-item ${app.featured ? 'featured-admin' : ''} ${selectedAdminIndex === index ? 'editing-admin' : ''}" draggable="true" data-drag-index="${index}">
           <div class="admin-item-main">
-            <strong>${selectedAdminIndex === index ? '✏️ ' : ''}${app.featured ? '📌 ' : ''}${escapeHtml(app.icon || '▦')} ${escapeHtml(app.title)}</strong>
+            <strong>${selectedAdminIndex === index ? '✏️ ' : ''}${app.featured ? '📌 ' : ''}${escapeHtml(app.title)}</strong>
             <span>${escapeHtml(app.category)} · ${escapeHtml(app.status)} · ${escapeHtml(app.version || 'sin versión')}</span>
             <div class="item-actions">
               <button class="admin-btn" type="button" data-edit="${index}">Editar</button>
@@ -1644,7 +1696,7 @@
 
     function updateRoadmapStatusIcon() {
       if (!roadmapStatusSelect || !roadmapStatusIcon) return;
-      roadmapStatusIcon.textContent = getRoadmapEmoji(roadmapStatusSelect.value);
+      roadmapStatusIcon.innerHTML = getRoadmapIcon(roadmapStatusSelect.value);
     }
 
     roadmapStatusSelect?.addEventListener('change', updateRoadmapStatusIcon);
@@ -1681,14 +1733,12 @@
       appEditIndex.value = '';
       document.getElementById('appTitle').value = '';
       document.getElementById('appSlug').value = '';
-      document.getElementById('appIcon').value = '🧩';
       document.getElementById('appCategory').value = '';
       document.getElementById('appStatus').value = 'Activa';
       document.getElementById('appVersion').value = 'v1.0';
       document.getElementById('appUrl').value = '';
       document.getElementById('appDescription').value = '';
       appFeatured.checked = false;
-      iconGrid?.classList.remove('open');
       clearValidation();
       setNewButtonMode(prepareNew);
       if (renderList && appsAdminList) renderAdminList();
@@ -1701,7 +1751,6 @@
       appEditIndex.value = index;
       document.getElementById('appTitle').value = app.title || '';
       document.getElementById('appSlug').value = app.id || '';
-      document.getElementById('appIcon').value = app.icon || '';
       document.getElementById('appCategory').value = app.category || '';
       document.getElementById('appStatus').value = app.status || 'Activa';
       document.getElementById('appVersion').value = app.version || '';
@@ -1727,7 +1776,6 @@
       return {
         title,
         id,
-        icon: document.getElementById('appIcon').value.trim() || '▦',
         category: document.getElementById('appCategory').value.trim(),
         status,
         tag: getTagFromStatus(status),
@@ -1766,7 +1814,7 @@
       if (!app.featured) return true;
       const featuredCount = apps.filter((item) => item.featured).length;
       const alreadyFeatured = editIndex !== '' && Boolean(apps[Number(editIndex)]?.featured);
-      return featuredCount < 2 || alreadyFeatured;
+      return featuredCount < 1 || alreadyFeatured;
     }
 
     function saveFormApp() {
@@ -1778,7 +1826,7 @@
       if (!canSetFeatured(app, index)) {
         app.featured = false;
         appFeatured.checked = false;
-        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
+        alert('Solo puedes tener 1 app destacada al mismo tiempo.');
       }
 
       if (index === '') {
@@ -1798,7 +1846,6 @@
       renderApps();
       selectedAdminIndex = null;
       appEditIndex.value = '';
-      iconGrid?.classList.remove('open');
       adminModal.classList.remove('open');
       document.body.classList.remove('modal-open');
     }
@@ -1903,9 +1950,9 @@
       const wantsFeatured = appFeatured.checked;
       const featuredCount = apps.filter((item, itemIndex) => item.featured && itemIndex !== numericIndex).length;
 
-      if (wantsFeatured && featuredCount >= 2) {
+      if (wantsFeatured && featuredCount >= 1) {
         appFeatured.checked = false;
-        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
+        alert('Solo puedes tener 1 app destacada al mismo tiempo.');
         return;
       }
 
@@ -1928,7 +1975,6 @@
       const data = {
         title: document.getElementById('appTitle').value.trim(),
         id: document.getElementById('appSlug').value.trim(),
-        icon: document.getElementById('appIcon').value.trim() || '🧩',
         category: document.getElementById('appCategory').value.trim(),
         status: document.getElementById('appStatus').value,
         tag: getTagFromStatus(document.getElementById('appStatus').value),
@@ -1953,7 +1999,7 @@
       if (!canSetFeatured(data, '')) {
         data.featured = false;
         appFeatured.checked = false;
-        alert('Solo puedes tener hasta 2 apps destacadas al mismo tiempo.');
+        alert('Solo puedes tener 1 app destacada al mismo tiempo.');
       }
 
       apps.push(data);
@@ -1972,27 +2018,6 @@
     resetAppsBtn.addEventListener('click', () => {
       resetForm(true, false);
     });
-
-    iconGrid.innerHTML = iconChoices.map((icon) => `<button class="icon-choice" type="button" data-icon="${icon}">${icon}</button>`).join('');
-
-    openIconPickerBtn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      iconGrid.classList.toggle('open');
-    });
-
-    iconGrid.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const icon = event.target.dataset.icon;
-      if (!icon) return;
-      document.getElementById('appIcon').value = icon;
-      iconGrid.classList.remove('open');
-    });
-
-    document.addEventListener('pointerdown', (event) => {
-      if (!iconGrid.classList.contains('open')) return;
-      if (event.target.closest('#iconGrid')) return;
-      iconGrid.classList.remove('open');
-    }, true);
 
     appsAdminList.addEventListener('pointerdown', (event) => {
       const item = event.target.closest('.admin-item');
@@ -2121,9 +2146,44 @@
       renderRoadmap();
     });
 
+
+    function openRoadmapEditor(index) {
+      const item = roadmapItems[Number(index)];
+      if (!item || !roadmapEditModal) return;
+      roadmapEditIndex.value = String(index);
+      roadmapEditText.value = item.text || '';
+      roadmapEditStatus.value = item.status || 'Idea';
+      roadmapEditModal.classList.add('open');
+      document.body.classList.add('modal-open');
+      setTimeout(() => roadmapEditText.focus(), 0);
+    }
+
+    function closeRoadmapEditor() {
+      roadmapEditModal?.classList.remove('open');
+      if (!adminModal?.classList.contains('open') && !appPopupModal?.classList.contains('open')) {
+        document.body.classList.remove('modal-open');
+      }
+    }
+
+    function saveRoadmapEditor() {
+      const index = Number(roadmapEditIndex?.value);
+      const item = roadmapItems[index];
+      if (!item) return;
+      const nextText = roadmapEditText.value.trim();
+      if (!nextText) return;
+      item.text = nextText;
+      item.status = roadmapEditStatus.value;
+      saveRoadmap();
+      renderWorkspace();
+      renderRoadmap();
+      closeRoadmapEditor();
+    }
+
     roadmapList?.addEventListener('click', (event) => {
-      const deleteIndex = event.target.dataset.roadmapDelete;
-      const editIndex = event.target.dataset.roadmapEdit;
+      const actionButton = event.target.closest('[data-roadmap-delete], [data-roadmap-edit]');
+      if (!actionButton) return;
+      const deleteIndex = actionButton.dataset.roadmapDelete;
+      const editIndex = actionButton.dataset.roadmapEdit;
 
       if (deleteIndex !== undefined) {
         roadmapItems.splice(Number(deleteIndex), 1);
@@ -2133,15 +2193,15 @@
       }
 
       if (editIndex !== undefined) {
-        const item = roadmapItems[Number(editIndex)];
-        const nextText = prompt('Editar anotación', item.text);
-        if (nextText === null) return;
-
-        item.text = nextText.trim() || item.text;
-        saveRoadmap();
-        renderWorkspace();
-        renderRoadmap();
+        openRoadmapEditor(editIndex);
       }
+    });
+
+    closeRoadmapEditBtn?.addEventListener('click', closeRoadmapEditor);
+    cancelRoadmapEditBtn?.addEventListener('click', closeRoadmapEditor);
+    saveRoadmapEditBtn?.addEventListener('click', saveRoadmapEditor);
+    roadmapEditModal?.addEventListener('click', (event) => {
+      if (event.target === roadmapEditModal) closeRoadmapEditor();
     });
 
     themeToggle?.addEventListener('click', () => {
@@ -2152,7 +2212,7 @@
       console.assert(getTagFromStatus('En desarrollo') === 'beta', 'Estado En desarrollo debe mapear a beta');
       const sample = [{ featured: true }, { featured: true }, { featured: true }];
       normalizeFeatured(sample);
-      console.assert(sample.filter((app) => app.featured).length === 2, 'Máximo 2 apps destacadas');
+      console.assert(sample.filter((app) => app.featured).length <= 1, 'Máximo 1 app destacada');
       console.assert(Array.isArray(loadApps()), 'loadApps debe devolver un array');
       console.assert(getCategories().includes('3D'), 'Los filtros deben usar categorías reales');
       console.assert([...getCategories()].join('|') === [...getCategories()].sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).join('|'), 'Los filtros deben estar ordenados ascendentemente');
